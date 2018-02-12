@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Callable
 from math import ceil
+from functools import total_ordering
 
+@total_ordering
 class arrival_data:
     """Represents one arrival"""
     def __init__(self, vehicle_id: int, 
@@ -30,3 +32,18 @@ class arrival_data:
     
     def __str__(self) -> str:
         return f"{self.towards[:30]:30} {self.expected_in_minutes():2}"
+
+    def as_tuple(self):
+        return (self.vehicle_id, self.stop_id, self.expected, self.ttl, self.towards)
+
+    def __eq__(self, other) -> bool:
+        return self.as_tuple() == other.as_tuple()
+
+    def __ne__(self, other) -> bool:
+        return not self == other
+
+    def __lt__(self, other) -> bool:
+        return self.as_tuple() < other.as_tuple()
+
+    def __repr__(self):
+        return str(self.as_tuple())

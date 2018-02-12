@@ -164,6 +164,36 @@ def test_is_expired_real():
     arr = arrival_data(234, 0, "X", expected, expected)
     assert arr.is_expired()
 
+def test_compare():
+    now = datetime.now()
+    expected = now + timedelta(seconds = 29)
+    ttl = now + timedelta(minutes = 10)
+    arr1 = arrival_data(234, 0, "X", expected, ttl)
+    arr1same = arrival_data(234, 0, "X", expected, ttl)
+    assert arr1 == arr1same
 
-if __name__ == "__main__":
-    pytest.main()
+    arr2 = arrival_data(34, 0, "X", expected, ttl)
+    assert arr2 < arr1
+    assert arr2 <= arr1
+    assert arr2 != arr1
+
+    arr3 = arrival_data(234, 5, "X", expected, ttl)
+    assert arr3 > arr1
+    assert arr3 >= arr1
+    assert arr3 != arr1
+    
+    arr4 = arrival_data(234, 0, "Z", expected, ttl)
+    assert arr4 > arr1
+    assert arr4 >= arr1
+    assert arr4 != arr1
+
+    arr5 = arrival_data(234, 0, "X", expected + timedelta(seconds = 20), ttl)
+    assert arr5 > arr1
+    assert arr5 >= arr1
+    assert arr5 != arr1
+
+    arr6 = arrival_data(234, 0, "X", expected, ttl + timedelta(seconds = 20))
+    assert arr6 > arr1
+    assert arr6 >= arr1
+    assert arr6 != arr1
+    
