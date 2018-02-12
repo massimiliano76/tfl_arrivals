@@ -100,3 +100,5 @@ ENV/
 # mypy
 .mypy_cache/
 /tfl_arrivals/arrivals.db
+/tfl_arrivals/tfl_env
+/tfl_arrivals/*.db
