@@ -4,9 +4,15 @@ from math import ceil
 
 class arrival_data:
     """Represents one arrival"""
-    def __init__(self, id: int, towards: str, expected: datetime, ttl: datetime, now: Callable[[], datetime] = datetime.now):
+    def __init__(self, vehicle_id: int, 
+                 stop_id: int,
+                 towards: str, 
+                 expected: datetime, 
+                 ttl: datetime, 
+                 now: Callable[[], datetime] = datetime.now):
         self.now = now
-        self.id = id
+        self.vehicle_id = vehicle_id
+        self.stop_id = stop_id
         self.towards = towards
         self.expected = expected
         self.ttl = ttl
