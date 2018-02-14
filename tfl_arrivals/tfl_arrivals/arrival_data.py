@@ -4,7 +4,7 @@ from math import ceil
 from functools import total_ordering
 
 VehicleId = NewType("VehicleId", int)
-StopId = NewType("VehicleId", int)
+StopId = NewType("VehicleId", str)
 
 @total_ordering
 class arrival_data:

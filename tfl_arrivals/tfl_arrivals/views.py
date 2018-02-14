@@ -4,7 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template
-from tfl_arrivals import app
+from tfl_arrivals import app, arrival_db, arrival_data
 
 @app.route('/')
 @app.route('/home')
@@ -25,6 +25,18 @@ def contact():
         year=datetime.now().year,
         message='Your contact page.'
     )
+
+#@app.route('/arrivals')
+#def home():
+#    """Renders the next three arrivals at all monitored stations"""
+#    db = arrival_db('arrivals.db')
+#    #db.get_arrivals()
+#    return render_template(
+#        'arrival_boards.html',
+#        title='Arrivals',
+#        year=datetime.now().year,
+#    )
+
 
 #@app.route('/about')
 #def about():

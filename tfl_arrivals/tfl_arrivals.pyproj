@@ -30,10 +30,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="runserver.py" />
+    <Compile Include="tfl_arrivals\arrivals_collector.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tfl_arrivals\arrival_data.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\arrival_db.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tfl_arrivals\parse_arrivals.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tfl_arrivals\fetcher.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\test\tests.py">
@@ -43,6 +52,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\test\test_arrival_db.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tfl_arrivals\test\test_parse_arrivals.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\__init__.py" />
@@ -82,6 +94,7 @@
     <Content Include="tfl_arrivals\static\scripts\respond.min.js" />
     <Content Include="tfl_arrivals\static\scripts\_references.js" />
     <Content Include="tfl_arrivals\templates\about.html" />
+    <Content Include="tfl_arrivals\templates\arrival_boards.html" />
     <Content Include="tfl_arrivals\templates\contact.html" />
     <Content Include="tfl_arrivals\templates\index.html" />
     <Content Include="tfl_arrivals\templates\layout.html" />
