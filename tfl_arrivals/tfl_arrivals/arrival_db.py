@@ -1,17 +1,13 @@
 import sqlite3
-import threading
 from typing import List, Tuple, Callable
-import time
 import os
 from tfl_arrivals.arrival_data import arrival_data
 from datetime import datetime
 from dateutil import parser
 
 class arrival_db:
-    def __init__(self, db_path: str): #, arrival_fetcher: Callable[[List[int]], List[arrival_data]]):
+    def __init__(self, db_path: str):
         self.db_path = db_path
-#        self.updating = False
-#        self.arrival_fetcher = arrival_fetcher
         if not os.path.isfile(db_path):
             self.create_db_tables()
 
@@ -28,14 +24,6 @@ class arrival_db:
         self._db_query("""CREATE TABLE monitored_stops(
             stop_id INT NOT NULL UNIQUE
             )""")
-
-    #def start_updating(self) -> None:
-    #    self.updating = True
-    #    threading.Thread(target=self.update_arrivals).start()
-
-    #def stop_updating(self) -> None:
-    #    self.updating = False        
-
 
     def add_monitored_stop(self, stop_id: int) -> None:
         try:
@@ -61,13 +49,6 @@ class arrival_db:
         q = f"SELECT vehicle_id, stop_id, towards, expected, ttl FROM arrivals WHERE stop_id IN ({str_ids})"
         curr = self._db_query(q)
         return [arrival_data(r[0], r[1], r[2], parser.parse(r[3]), parser.parse(r[4])) for r in curr.fetchall()]
-
-    #def update_arrivals(self):
-    #    while self.updating:
-    #        stops = get_monitored_stops()
-    #        new_arrivals = self.arrival_fetcher.fetch(stops)
-    #        self.add_arrivals(new_arrivals)
-    #        time.sleep(10)
         
     def _get_conn(self) -> sqlite3.Connection:
         return sqlite3.connect(self.db_path)
