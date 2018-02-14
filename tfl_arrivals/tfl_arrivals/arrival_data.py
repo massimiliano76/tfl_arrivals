@@ -1,13 +1,16 @@
 from datetime import datetime
-from typing import Callable
+from typing import Callable, NewType
 from math import ceil
 from functools import total_ordering
+
+VehicleId = NewType("VehicleId", int)
+StopId = NewType("VehicleId", int)
 
 @total_ordering
 class arrival_data:
     """Represents one arrival"""
-    def __init__(self, vehicle_id: int, 
-                 stop_id: int,
+    def __init__(self, vehicle_id: VehicleId, 
+                 stop_id: StopId,
                  towards: str, 
                  expected: datetime, 
                  ttl: datetime, 

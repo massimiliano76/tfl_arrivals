@@ -1,7 +1,7 @@
 import sqlite3
 from typing import List, Tuple, Callable
 import os
-from tfl_arrivals.arrival_data import arrival_data
+from tfl_arrivals.arrival_data import arrival_data, StopId
 from datetime import datetime
 from dateutil import parser
 
@@ -25,16 +25,16 @@ class arrival_db:
             stop_id INT NOT NULL UNIQUE
             )""")
 
-    def add_monitored_stop(self, stop_id: int) -> None:
+    def add_monitored_stop(self, stop_id: StopId) -> None:
         try:
             self._db_query(f"INSERT INTO monitored_stops (stop_id) VALUES ({stop_id})")
         except sqlite3.IntegrityError:
             pass
 
-    def remove_monitored_stop(self, stop_id: int) -> None:
+    def remove_monitored_stop(self, stop_id: StopId) -> None:
         self._db_query(f"DELETE FROM monitored_stops WHERE stop_id = ({stop_id})")
 
-    def get_monitored_stops(self) -> List[int]:
+    def get_monitored_stops(self) -> List[StopId]:
         cur = self._db_query("SELECT stop_id FROM monitored_stops ORDER BY stop_id")
         stops = [r[0] for r in cur.fetchall()]
         return stops
@@ -44,7 +44,7 @@ class arrival_db:
         tuple_args = [(a.vehicle_id, a.expected, a.ttl, a.towards, a.stop_id) for a in arrivals]
         self._db_query(q, tuple_args)
 
-    def get_arrivals(self, stop_ids: List[int]) -> List[arrival_data]:
+    def get_arrivals(self, stop_ids: List[StopId]) -> List[arrival_data]:
         str_ids = ", ".join([str(id) for id in stop_ids])
         q = f"SELECT vehicle_id, stop_id, towards, expected, ttl FROM arrivals WHERE stop_id IN ({str_ids})"
         curr = self._db_query(q)
