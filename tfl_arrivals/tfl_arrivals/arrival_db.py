@@ -1,7 +1,7 @@
 import sqlite3
 from typing import List, Tuple, Callable
 import os
-from tfl_arrivals.arrival_data import arrival_data, StopId
+from tfl_arrivals.arrival_data import arrival_data, StopId, LineId
 from datetime import datetime
 from dateutil import parser
 
@@ -22,21 +22,27 @@ class arrival_db:
             )""")
 
         self._db_query("""CREATE TABLE monitored_stops(
-            stop_id INT NOT NULL UNIQUE
+            line_id string NOT NULL,
+            stop_id string NOT NULL,
+            PRIMARY KEY(line_id, stop_id)
             )""")
 
-    def add_monitored_stop(self, stop_id: StopId) -> None:
+    def add_monitored_stop(self, line_id: LineId, stop_id: StopId) -> None:
         try:
-            self._db_query(f"INSERT INTO monitored_stops (stop_id) VALUES ({stop_id})")
+            self._db_query(f"INSERT INTO monitored_stops (line_id, stop_id) VALUES ('{line_id}', '{stop_id}')")
         except sqlite3.IntegrityError:
             pass
 
-    def remove_monitored_stop(self, stop_id: StopId) -> None:
-        self._db_query(f"DELETE FROM monitored_stops WHERE stop_id = ({stop_id})")
+    def remove_monitored_stop(self, line_id: LineId, stop_id: StopId) -> None:
+        self._db_query(f"DELETE FROM monitored_stops WHERE stop_id = '{stop_id}' AND line_id = '{line_id}'")
 
-    def get_monitored_stops(self) -> List[StopId]:
-        cur = self._db_query("SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-        stops = [r[0] for r in cur.fetchall()]
+    def get_monitored_stops(self) -> List[Tuple[LineId, StopId]]:
+        cur = self._db_query("SELECT line_id, stop_id FROM monitored_stops ORDER BY line_id, stop_id")
+        stops = []
+        for r in cur.fetchall():
+            print(r)
+            stops.append((r[0], r[1]))
+        #stops = [(r[0], r[1]) for r in cur.fetchall()]
         return stops
         
     def add_arrivals(self, arrivals: List[arrival_data]) -> None:

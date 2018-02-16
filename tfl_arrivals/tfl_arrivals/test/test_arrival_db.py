@@ -1,7 +1,7 @@
 import pytest
 import os.path
 import sqlite3
-from tfl_arrivals.arrival_db import arrival_db, arrival_data
+from tfl_arrivals.arrival_db import arrival_db, arrival_data, StopId, LineId
 from typing import List
 from datetime import datetime, timedelta
 
@@ -36,7 +36,6 @@ def select_single_column(file_name: str, q: str) -> List[str]:
     conn.close()
     return values
 
-
 def test_db_creation(file_name):    
     db = arrival_db(file_name)
     assert os.path.isfile(file_name)
@@ -47,47 +46,44 @@ def test_db_creation(file_name):
 
 def test_add_remove_monitored_stop(file_name):
     db = arrival_db(file_name)
-    db.add_monitored_stop(53);
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops")
-    assert stops == [53]
+    assert [] == db.get_monitored_stops()
+    piccadilly = LineId("piccadilly")
+    uxbridge = StopId("Uxbridge")
+    knightsbridge = StopId("Knightsbridge")
+    northfields = StopId("Northfields")
 
-    db.add_monitored_stop(67);
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
-    assert stops == [53, 67]
+    db.add_monitored_stop(piccadilly, uxbridge);
+    stops = db.get_monitored_stops()
+    assert stops == [(piccadilly, uxbridge)]
+
+    db.add_monitored_stop(piccadilly, knightsbridge)
+    stops = db.get_monitored_stops()
+    print("-" * 50)
+    print(stops)
+    assert stops == [(piccadilly, knightsbridge), (piccadilly, uxbridge)]
    
 
-    db.add_monitored_stop(67); # second add doesn't throw
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
-    assert stops == [53, 67]
+    db.add_monitored_stop(piccadilly, knightsbridge); # second add doesn't throw
+    stops = db.get_monitored_stops()
+    assert stops == [(piccadilly, knightsbridge), (piccadilly, uxbridge)]
     
-    db.add_monitored_stop(42);
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
-    assert stops == [42, 53, 67]
+    db.add_monitored_stop(piccadilly, northfields)
+    stops = db.get_monitored_stops()
+    assert stops == [(piccadilly, knightsbridge), (piccadilly, northfields), (piccadilly, uxbridge)]
 
-    db.remove_monitored_stop(42);
-    db.remove_monitored_stop(53);
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
-    assert stops == [67]
+    db.remove_monitored_stop(piccadilly, northfields)
+    db.remove_monitored_stop(piccadilly, uxbridge)
+    stops = db.get_monitored_stops()
+    assert stops == [(piccadilly, knightsbridge)]
 
-    db.remove_monitored_stop(14631); # removing stop that is not watched doesn't throw
-    db.remove_monitored_stop(67);
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
+    db.remove_monitored_stop(LineId("x"), knightsbridge) # removing stop that is not watched doesn't throw
+    db.remove_monitored_stop(piccadilly, StopId("X")) # removing stop that is not watched doesn't throw
+    db.remove_monitored_stop(piccadilly, knightsbridge)
+    stops = db.get_monitored_stops()
     assert stops == []
 
-    db.remove_monitored_stop(67); 
-    stops = select_single_column(file_name, "SELECT stop_id FROM monitored_stops ORDER BY stop_id")
-    db_stops = db.get_monitored_stops()
-    assert stops == db_stops
+    db.remove_monitored_stop(piccadilly, knightsbridge)
+    stops = db.get_monitored_stops()
     assert stops == []
 
 def test_add_get_arrivals(file_name):
@@ -114,11 +110,3 @@ def test_add_get_arrivals(file_name):
 
     db_arrivals = db.get_arrivals([42, 97])
     assert db_arrivals == orig_arrivals
-
-
-    
-
-    #def add_arrivals(self, arrivals: List[arrival_data]) -> None:
-    #    q = "INSERT INTO arrivals (vehicle_id, expected, ttl, towards, stop_id) VALUES (?, ?, ?, ?, ?)"
-    #    tuple_args = [(a.vehicle_id, a.expected, a.ttl, a.towards, a.id) for a in arrivals]
-    #    self._db_query(q, tuple_args)

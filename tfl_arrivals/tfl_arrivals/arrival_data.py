@@ -5,6 +5,7 @@ from functools import total_ordering
 
 VehicleId = NewType("VehicleId", int)
 StopId = NewType("VehicleId", str)
+LineId = NewType("LineId", str)
 
 @total_ordering
 class arrival_data:
