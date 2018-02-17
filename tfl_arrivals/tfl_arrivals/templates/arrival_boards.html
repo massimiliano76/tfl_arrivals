@@ -1,0 +1,30 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div>
+        {% for stop in stops %}
+        <h2>{{stop}}</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Towards</th>
+                    <th>Expected</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for arrival in stops[stop] %}
+                <tr>
+                    <td>{{arrival.towards}}</td>
+                    <td>{{arrival.expected}} min</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

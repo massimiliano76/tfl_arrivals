@@ -3,8 +3,11 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template
-from tfl_arrivals import app, arrival_db, arrival_data
+from flask import render_template, request, redirect
+from tfl_arrivals import app
+from tfl_arrivals.arrival_db import arrival_data, arrival_db
+import json
+from os import path
 
 @app.route('/')
 @app.route('/home')
@@ -25,6 +28,29 @@ def contact():
         year=datetime.now().year,
         message='Your contact page.'
     )
+
+@app.route('/add_monitored_stop', methods=["POST"])
+def add_monitored_stop():    
+    db_path = path.join(app.root_path, "arrivals.db")
+    db = arrival_db(db_path)
+    data = json.loads(request.data)
+    print(f"Processing add_monitored_stop, {data}")
+    db.add_monitored_stop(data["line_id"], data["stop_id"])
+    return ""
+
+@app.route('/arrivals')
+def arrivals():    
+    db_path = path.join(app.root_path, "arrivals.db")
+    db = arrival_db(db_path)    
+    arrivals = db.get_all_arrivals()
+    arrivals_by_stop = {}
+    for arr in arrivals:
+        if arr.stop_id in arrivals_by_stop:
+            arrivals_by_stop[arr.stop_id].append(arr)
+        else:
+            arrivals_by_stop[arr.stop_id] = [arr]
+    return render_template("arrival_boards.html", stops=arrivals_by_stop)    
+
 
 #@app.route('/arrivals')
 #def home():
