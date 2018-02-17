@@ -1,14 +1,16 @@
 import sqlite3
 from typing import List, Tuple, Callable
 import os
-from tfl_arrivals.arrival_data import arrival_data, StopId, LineId
+from tfl_arrivals.arrival_data import arrival_data, StopId, LineId, VehicleId
 from datetime import datetime
 from dateutil import parser
 
 class arrival_db:
     def __init__(self, db_path: str):
+        print(f"arrival_db at {db_path}")
         self.db_path = db_path
         if not os.path.isfile(db_path):
+            print(f"Creating database at {db_path}")
             self.create_db_tables()
 
 
@@ -40,19 +42,48 @@ class arrival_db:
         cur = self._db_query("SELECT line_id, stop_id FROM monitored_stops ORDER BY line_id, stop_id")
         stops = []
         for r in cur.fetchall():
-            print(r)
             stops.append((r[0], r[1]))
         #stops = [(r[0], r[1]) for r in cur.fetchall()]
         return stops
+
+    def remove_old_arrivals(self, ts: datetime):
+        q = f"DELETE FROM arrivals WHERE ttl < '{ts}'"
+        curr = self._db_query(q)
+
+    def remove_arrival(self, vehicle_id: VehicleId, stop_id: StopId):
+        q = f"DELETE FROM arrivals WHERE vehicle_id == {vehicle_id} AND stop_id = '{stop_id}'"
+        curr = self._db_query(q)
         
     def add_arrivals(self, arrivals: List[arrival_data]) -> None:
+        for arr in arrivals:
+            self.remove_arrival(arr.vehicle_id, arr.stop_id)
+
         q = "INSERT INTO arrivals (vehicle_id, expected, ttl, towards, stop_id) VALUES (?, ?, ?, ?, ?)"
         tuple_args = [(a.vehicle_id, a.expected, a.ttl, a.towards, a.stop_id) for a in arrivals]
         self._db_query(q, tuple_args)
 
     def get_arrivals(self, stop_ids: List[StopId]) -> List[arrival_data]:
         str_ids = ", ".join([str(id) for id in stop_ids])
-        q = f"SELECT vehicle_id, stop_id, towards, expected, ttl FROM arrivals WHERE stop_id IN ({str_ids})"
+        q = f"""SELECT vehicle_id, stop_id, towards, expected, ttl 
+            FROM arrivals 
+            WHERE stop_id IN ({str_ids}) 
+            ORDER BY ttl DESC
+            LIMIT 3
+            """
+        curr = self._db_query(q)
+        return [arrival_data(r[0], r[1], r[2], parser.parse(r[3]), parser.parse(r[4])) for r in curr.fetchall()]
+
+
+
+    def get_all_arrivals(self) -> List[arrival_data]:
+        stop_ids = self.get_monitored_stops()
+        str_ids = ", ".join([str(id[1]) for id in stop_ids])
+        q = f"""SELECT vehicle_id, stop_id, towards, expected, ttl 
+            FROM arrivals 
+            WHERE stop_id IN ('{str_ids}')
+            ORDER BY ttl DESC   
+            LIMIT 3
+            """
         curr = self._db_query(q)
         return [arrival_data(r[0], r[1], r[2], parser.parse(r[3]), parser.parse(r[4])) for r in curr.fetchall()]
         
