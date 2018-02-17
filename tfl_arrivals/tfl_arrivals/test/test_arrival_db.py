@@ -52,18 +52,16 @@ def test_add_remove_monitored_stop(file_name):
     knightsbridge = StopId("Knightsbridge")
     northfields = StopId("Northfields")
 
-    db.add_monitored_stop(piccadilly, uxbridge);
+    db.add_monitored_stop(piccadilly, uxbridge)
     stops = db.get_monitored_stops()
     assert stops == [(piccadilly, uxbridge)]
 
     db.add_monitored_stop(piccadilly, knightsbridge)
     stops = db.get_monitored_stops()
-    print("-" * 50)
-    print(stops)
     assert stops == [(piccadilly, knightsbridge), (piccadilly, uxbridge)]
    
 
-    db.add_monitored_stop(piccadilly, knightsbridge); # second add doesn't throw
+    db.add_monitored_stop(piccadilly, knightsbridge) # second add doesn't throw
     stops = db.get_monitored_stops()
     assert stops == [(piccadilly, knightsbridge), (piccadilly, uxbridge)]
     
