@@ -102,3 +102,5 @@ ENV/
 /tfl_arrivals/arrivals.db
 /tfl_arrivals/tfl_env
 /tfl_arrivals/*.db
+/tfl_arrivals/obj/Debug
+/tfl_arrivals/obj/Release
