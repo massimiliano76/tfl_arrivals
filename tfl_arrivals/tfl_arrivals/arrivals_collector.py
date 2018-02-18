@@ -4,6 +4,9 @@ import time
 from threading import Thread
 import itertools
 from datetime import datetime
+import logging
+
+module_logger = logging.getLogger(__name__)
 
 class arrivals_collector(object):
     """Scheduled the data collection, and saves data to the database"""
@@ -11,16 +14,16 @@ class arrivals_collector(object):
         self.db_file_name = db_file_name
         self.fetcher = fetcher
         self.running = False
-        pass
+        self.logger = logging.getLogger(__name__)
 
     def collect(self) -> List[arrival_data.arrival_data]:
         self.conn = arrival_db.arrival_db(self.db_file_name)
         stops = self.conn.get_monitored_stops()
-        print(f"Colecting arrival info for stops: {stops}")
+        self.logger.debug(f"Colecting arrival info for stops: {stops}")
         return list(itertools.chain.from_iterable([parse_arrivals.parse_arrivals(self.fetcher(*stop)) for stop in stops]))
 
     def start_collecting(self):
-        print("Start collecting")
+        self.logger.info("Start collecting")
         self.running = True
         self.collector_thread = Thread(target=self._run_loop)
         self.collector_thread.start()        
@@ -30,7 +33,7 @@ class arrivals_collector(object):
 
     def _run_loop(self):
         while self.running:
-            print("Updating arrival db...")
+            self.logger.info("Updating arrival db...")
             arrivals = self.collect()
             self.conn.remove_old_arrivals(datetime.now())
             self.conn.add_arrivals(arrivals)

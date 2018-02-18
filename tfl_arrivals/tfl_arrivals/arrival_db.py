@@ -4,13 +4,16 @@ import os
 from tfl_arrivals.arrival_data import arrival_data, StopId, LineId, VehicleId
 from datetime import datetime
 from dateutil import parser
+import logging
+
+module_logger = logging.getLogger(__name__)
 
 class arrival_db:
     def __init__(self, db_path: str):
-        print(f"arrival_db at {db_path}")
+        self.logger = logging.getLogger(__name__)        
         self.db_path = db_path
         if not os.path.isfile(db_path):
-            print(f"Creating database at {db_path}")
+            self.logger.info(f"Creating database at {db_path}")
             self.create_db_tables()
 
 
@@ -95,13 +98,13 @@ class arrival_db:
         cur = None
         try:
             if args == None:
-                print(f"query='{query}'")
+                self.logger.debug(f"query='{query}'")
                 cur = conn.execute(query)
             else:
-                print(f"query='{query}', args={args}")
+                self.logger.debug(f"query='{query}', args={args}")
                 cur = conn.executemany(query, args)
         except Exception as e:
-            print("Unable to ecxecute query: " + str(e))
+            self.logger.error("Unable to execute query: " + str(e))
 
         conn.commit()
         return cur

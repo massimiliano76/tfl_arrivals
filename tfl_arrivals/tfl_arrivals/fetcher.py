@@ -1,8 +1,9 @@
 import requests
+import logging
 
 def url_fetcher(line_id: str, stop_id: str):
     url = f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound" 
-    print(f"Fetching url '{url}'")
+    logging.info(f"Fetching url '{url}'")
     return requests.get(url).text
 
 

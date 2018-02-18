@@ -8,6 +8,7 @@ from tfl_arrivals import app
 from tfl_arrivals.arrival_db import arrival_data, arrival_db
 import json
 from os import path
+import logging
 
 @app.route('/')
 @app.route('/home')
@@ -34,7 +35,7 @@ def add_monitored_stop():
     db_path = path.join(app.root_path, "arrivals.db")
     db = arrival_db(db_path)
     data = json.loads(request.data)
-    print(f"Processing add_monitored_stop, {data}")
+    logging.info(f"Processing add_monitored_stop, {data}")
     db.add_monitored_stop(data["line_id"], data["stop_id"])
     return ""
 
