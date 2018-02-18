@@ -19,6 +19,7 @@
     <RootNamespace>tfl_arrivals</RootNamespace>
     <InterpreterId>
     </InterpreterId>
+    <WebBrowserPort>5555</WebBrowserPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
