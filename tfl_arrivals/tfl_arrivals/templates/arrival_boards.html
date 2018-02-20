@@ -9,7 +9,6 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Towards</th>
                     <th>Expected</th>
                 </tr>
@@ -18,7 +17,7 @@
                 {% for arrival in stops[stop] %}
                 <tr>
                     <td>{{arrival.towards}}</td>
-                    <td>{{arrival.expected}} min</td>
+                    <td>{{arrival.expected_in_minutes()}} min</td>
                 </tr>
                 {% endfor %}
             </tbody>
