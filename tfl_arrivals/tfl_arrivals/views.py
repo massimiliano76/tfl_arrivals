@@ -38,13 +38,16 @@ def add_monitored_stop():
 
 @app.route('/arrivals')
 def arrivals():    
-    arrivals = db.session.query(Arrival).limit(3).all()
+    stops = db.session.query(MonitoredStop).all()
+    
     arrivals_by_stop = {}
-    for arr in arrivals:
-        if arr.naptan_id in arrivals_by_stop:
-            arrivals_by_stop[arr.naptan_id].append(arr)
-        else:
-            arrivals_by_stop[arr.naptan_id] = [arr]
+    for stop in stops:
+        arrivals_by_stop[stop] = db.session.query(Arrival).\
+            filter(Arrival.naptan_id == stop.naptan_id).\
+            filter(Arrival.ttl > datetime.now()).\
+            order_by(Arrival.expected).\
+            limit(3).all()
+
     return render_template("arrival_boards.html", stops=arrivals_by_stop)    
 
 
