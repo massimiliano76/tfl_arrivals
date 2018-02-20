@@ -3,9 +3,9 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, url_for
 from tfl_arrivals import app
-from tfl_arrivals.arrival_db import arrival_data, arrival_db
+from tfl_arrivals.arrival_data import Arrival, MonitoredStop, db
 import json
 from os import path
 import logging
@@ -14,11 +14,8 @@ import logging
 @app.route('/home')
 def home():
     """Renders the home page."""
-    return render_template(
-        'index.html',
-        title='Home Page',
-        year=datetime.now().year,
-    )
+    return redirect(url_for("arrivals"))
+
 
 @app.route('/contact')
 def contact():
@@ -32,24 +29,22 @@ def contact():
 
 @app.route('/add_monitored_stop', methods=["POST"])
 def add_monitored_stop():    
-    db_path = path.join(app.root_path, "arrivals.db")
-    db = arrival_db(db_path)
     data = json.loads(request.data)
     logging.info(f"Processing add_monitored_stop, {data}")
-    db.add_monitored_stop(data["line_id"], data["stop_id"])
+    new_stop = MonitoredStop(naptan_id = data["naptan_id"], line_id = data["line_id"])
+    db.session.add(new_stop)
+    db.session.commit()    
     return ""
 
 @app.route('/arrivals')
 def arrivals():    
-    db_path = path.join(app.root_path, "arrivals.db")
-    db = arrival_db(db_path)    
-    arrivals = db.get_all_arrivals()
+    arrivals = db.session.query(Arrival).limit(3).all()
     arrivals_by_stop = {}
     for arr in arrivals:
-        if arr.stop_id in arrivals_by_stop:
-            arrivals_by_stop[arr.stop_id].append(arr)
+        if arr.naptan_id in arrivals_by_stop:
+            arrivals_by_stop[arr.naptan_id].append(arr)
         else:
-            arrivals_by_stop[arr.stop_id] = [arr]
+            arrivals_by_stop[arr.naptan_id] = [arr]
     return render_template("arrival_boards.html", stops=arrivals_by_stop)    
 
 
