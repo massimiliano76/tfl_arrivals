@@ -24,6 +24,7 @@ class Arrival(db.Model):
     __tablename__ = "arrival"
 
     arrival_id = db.Column(db.Integer, primary_key = True)
+    line_id = db.Column(db.String, nullable = False)
     vehicle_id = db.Column(db.String(10), nullable = False)
     naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))    
     towards = db.Column(db.String(40), nullable = False)
@@ -32,9 +33,9 @@ class Arrival(db.Model):
     stop = db.relationship(MonitoredStop)
 
     def __repr__(self):
-        return f"Arrival(arrival_id={self.arrival_id}, vehicle_id={self.vehicle_id}, " +\
-               f"naptan_id='{self.naptan_id}', towards='{self.towards}', " +\
-               f"expected='{self.expected}', ttl='{self.ttl}')"
+        return f"Arrival(arrival_id={self.arrival_id}, line_id='{self.line_id}', " +\
+               f"vehicle_id='{self.vehicle_id}', naptan_id='{self.naptan_id}', " +\
+               f"towards='{self.towards}', expected='{self.expected}', ttl='{self.ttl}')"
     
     def expected_in_minutes(self, now: Callable[[], datetime]=datetime.now) -> int:
         delta = self.expected - now()
@@ -56,7 +57,7 @@ class Arrival(db.Model):
         self.ttl = other.ttl
 
     def as_tuple(self):
-        return (self.arrival_id, self.vehicle_id, self.naptan_id, self.towards, self.expected, self.ttl)
+        return (self.arrival_id, self.line_id, self.vehicle_id, self.naptan_id, self.towards, self.expected, self.ttl)
 
     def __eq__(self, other) -> bool:
         if type(self) != type(other):
