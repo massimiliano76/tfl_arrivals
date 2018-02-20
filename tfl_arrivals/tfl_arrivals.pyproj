@@ -37,9 +37,6 @@
     <Compile Include="tfl_arrivals\arrival_data.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tfl_arrivals\arrival_db.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="tfl_arrivals\parse_arrivals.py">
       <SubType>Code</SubType>
     </Compile>
@@ -50,9 +47,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\test\test_arrival_data.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="tfl_arrivals\test\test_arrival_db.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\test\test_parse_arrivals.py">

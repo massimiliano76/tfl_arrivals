@@ -4,7 +4,7 @@ This script runs the tfl_arrivals application using a development server.
 
 import logging
 from os import environ
-from tfl_arrivals import app, arrival_db, arrivals_collector
+from tfl_arrivals import app, arrivals_collector, db
 from tfl_arrivals.fetcher import url_fetcher
 from os import path
 import time
@@ -29,23 +29,20 @@ def setup_logger():
 
 if __name__ == '__main__':
     logger = setup_logger()
+    db.create_all()
+
     HOST = environ.get('SERVER_HOST', 'localhost')
     try:
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-
-    db_path = path.join(app.root_path, "arrivals.db")
-    logger.info(f"Initialize database at {db_path}")
-    db = arrival_db.arrival_db(db_path)
     
     logger.info("Start live data collection")
-    collector = arrivals_collector.arrivals_collector(db_path, url_fetcher)
+    collector = arrivals_collector.arrivals_collector(url_fetcher)
     collector.start_collecting()
     
     app.config.update(dict(
-        DATABASE=db_path,
-        DEBUG=True
+        DEBUG=False
         ))
 
     logger.info(f"Start listening on {HOST}:{PORT}")
