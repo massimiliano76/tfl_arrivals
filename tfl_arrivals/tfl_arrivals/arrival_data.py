@@ -5,7 +5,7 @@ from functools import total_ordering
 from tfl_arrivals import db
 
 
-VehicleId = NewType("VehicleId", int)
+VehicleId = NewType("VehicleId", str)
 StopId = NewType("VehicleId", str)
 LineId = NewType("LineId", str)
 
@@ -24,9 +24,9 @@ class Arrival(db.Model):
     __tablename__ = "arrival"
 
     arrival_id = db.Column(db.Integer, primary_key = True)
-    vehicle_id = db.Column(db.Integer, nullable = False)
-    naptan_id = db.Column(db.String, db.ForeignKey("monitored_stop.naptan_id"))    
-    towards = db.Column(db.String, nullable = False)
+    vehicle_id = db.Column(db.String(10), nullable = False)
+    naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))    
+    towards = db.Column(db.String(40), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
     ttl = db.Column(db.DateTime, nullable = False)
     stop = db.relationship(MonitoredStop)
