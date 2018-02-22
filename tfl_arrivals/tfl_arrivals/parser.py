@@ -1,5 +1,5 @@
 from typing import List
-from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId
+from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, Line
 import json 
 from datetime import datetime
 
@@ -18,3 +18,12 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
                           )
         arrivals.append(arrival)
     return arrivals
+
+def parse_lines(raw_json: str) -> List[Line]:
+    lines = []
+    for raw in json.loads(raw_json):
+        line = Line(line_id = raw["id"],
+                    name = raw["name"],
+                    mode_name = raw["modeName"])
+        lines.append(line)
+    return lines

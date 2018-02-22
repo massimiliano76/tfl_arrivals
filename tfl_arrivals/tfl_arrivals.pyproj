@@ -37,7 +37,7 @@
     <Compile Include="tfl_arrivals\arrival_data.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tfl_arrivals\parse_arrivals.py">
+    <Compile Include="tfl_arrivals\parser.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\fetcher.py">
