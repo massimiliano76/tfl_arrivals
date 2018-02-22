@@ -17,7 +17,7 @@
             <tbody>
                 {% for arrival in stops[stop] %}
                 <tr>
-                    <td>{{arrival.line_id}}</td>
+                    <td>{{arrival.line.name}}</td>
                     <td>{{arrival.towards}}</td>
                     <td>{{arrival.expected_in_minutes()}} min</td>
                 </tr>
