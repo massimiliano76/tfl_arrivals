@@ -1,12 +1,18 @@
 import requests
 import logging
 
-def url_fetcher(line_id: str, stop_id: str):
-    url = f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound" 
+def fetch(url):
     logging.info(f"Fetching url '{url}'")
-    return requests.get(url).text
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.text
 
 
+def url_fetcher(line_id: str, stop_id: str):
+    return fetch(f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound")
+
+def lines_fetcher(mode: str):
+    return fetch(f"https://api.tfl.gov.uk/Line/Mode/{mode}")
 
 ## Fetches arrival data from previously dumpes json files
 #class file_fetcher:

@@ -9,28 +9,38 @@ VehicleId = NewType("VehicleId", str)
 StopId = NewType("VehicleId", str)
 LineId = NewType("LineId", str)
 
+modes = ["tube", "bus"]
+
+class Line(db.Model):
+    __tablename__ = "line"
+
+    line_id = db.Column(db.String, primary_key = True)
+    name = db.Column(db.String(40), nullable = False)
+    mode_name = db.Column(db.String(10), nullable = False)
 
     
 class MonitoredStop(db.Model):
     __tablename__ = "monitored_stop"
 
     naptan_id = db.Column(db.String, primary_key = True)
-    line_id = db.Column(db.String, nullable = False)
+    line_id = db.Column(db.String, db.ForeignKey("line.line_id"))
     station_name = db.Column(db.String)
     platform_name = db.Column(db.String)
+    line = db.relationship("Line", uselist = False)
 
 class Arrival(db.Model):
     """Represents one arrival"""
     __tablename__ = "arrival"
 
     arrival_id = db.Column(db.Integer, primary_key = True)
-    line_id = db.Column(db.String, nullable = False)
+    line_id = db.Column(db.String, db.ForeignKey("line.line_id"))
     vehicle_id = db.Column(db.String(10), nullable = False)
     naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))    
     towards = db.Column(db.String(40), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
     ttl = db.Column(db.DateTime, nullable = False)
     stop = db.relationship(MonitoredStop)
+    line = db.relationship("Line", uselist = False)
 
     def __repr__(self):
         return f"Arrival(arrival_id={self.arrival_id}, line_id='{self.line_id}', " +\
@@ -69,3 +79,4 @@ class Arrival(db.Model):
 
 def arrival_display_line(arrival: Arrival, now: Callable[[], datetime]=datetime.now):
     return f"{arrival.towards[:30]:30} {arrival.expected_in_minutes(now):2}"
+
