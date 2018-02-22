@@ -20,6 +20,8 @@
     <InterpreterId>
     </InterpreterId>
     <WebBrowserPort>5555</WebBrowserPort>
+    <CommandLineArguments>
+    </CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +43,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\fetcher.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tfl_arrivals\prepopulate.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\test\tests.py">

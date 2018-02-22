@@ -4,10 +4,11 @@ This script runs the tfl_arrivals application using a development server.
 
 import logging
 from os import environ
-from tfl_arrivals import app, arrivals_collector, db
+from tfl_arrivals import app, arrivals_collector, db, prepopulate
 from tfl_arrivals.fetcher import url_fetcher
 from os import path
 import time
+import sys
 
 
 def setup_logger():
@@ -27,9 +28,17 @@ def setup_logger():
     logger.addHandler(sh)
     return logger
 
+
+def init_db():    
+    db.create_all()
+    prepopulate.populate_lines()
+
 if __name__ == '__main__':
     logger = setup_logger()
-    db.create_all()
+
+    if len(sys.argv) == 2 and sys.argv[1] == "init":
+        init_db()
+        exit()
 
     HOST = environ.get('SERVER_HOST', 'localhost')
     try:
