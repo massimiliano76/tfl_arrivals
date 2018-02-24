@@ -8,11 +8,18 @@ def fetch(url):
     return response.text
 
 
-def url_fetcher(line_id: str, stop_id: str):
-    return fetch(f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound")
+def url_fetcher(naptan_id: str):
+    #return fetch(f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound")
+    return fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}/Arrivals")
 
 def lines_fetcher(mode: str):
     return fetch(f"https://api.tfl.gov.uk/Line/Mode/{mode}")
+
+def line_stops_fetcher(line_id: str):
+    return fetch(f"https://api.tfl.gov.uk/Line/{line_id}/StopPoints")
+
+def stop_fetcher(naptan_id: str):
+    return fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}")
 
 ## Fetches arrival data from previously dumpes json files
 #class file_fetcher:

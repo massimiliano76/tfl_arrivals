@@ -1,5 +1,5 @@
-from typing import List
-from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, Line
+from typing import List, Dict
+from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, Line, StopPoint
 import json 
 from datetime import datetime
 
@@ -27,3 +27,19 @@ def parse_lines(raw_json: str) -> List[Line]:
                     mode_name = raw["modeName"])
         lines.append(line)
     return lines
+
+
+def _parse_stop(stop_json) -> StopPoint:    
+    return StopPoint(naptan_id = stop_json["naptanId"],
+                name = stop_json["commonName"],
+                indicator = stop_json["indicator"] if "indicator" in stop_json else "")
+
+def parse_line_stops(raw_json: str) -> List[StopPoint]:
+    stops = []    
+    for raw in json.loads(raw_json):    
+        stop = _parse_stop(raw)
+        stops.append(stop)
+    return stops
+
+def parse_stop(raw_json: str) -> StopPoint:
+    return _parse_stop(json.loads(raw_json))

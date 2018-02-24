@@ -11,22 +11,33 @@ LineId = NewType("LineId", str)
 
 modes = ["tube", "bus"]
 
+line_stops = db.Table("line_stops", db.metadata,
+                   db.Column("line_id", db.String(30), db.ForeignKey("line.line_id")),
+                   db.Column("stop_point_id", db.String(15), db.ForeignKey("stop_point.naptan_id")))
+
 class Line(db.Model):
     __tablename__ = "line"
 
-    line_id = db.Column(db.String, primary_key = True)
+    line_id = db.Column(db.String(30), primary_key = True)
     name = db.Column(db.String(40), nullable = False)
     mode_name = db.Column(db.String(10), nullable = False)
+    stops = db.relationship("StopPoint", secondary=line_stops, back_populates="lines")
 
+class StopPoint(db.Model):
+    __tablename__ = "stop_point"
+
+    naptan_id = db.Column(db.String(15), primary_key = True)
+    name = db.Column(db.String(40), nullable = False)
+    indicator = db.Column(db.String(10)) # e.g. "Stop B"
+    lines = db.relationship("Line", secondary=line_stops, back_populates="stops")
+
+    def json(self) -> str:
+        return f'{{"naptan_id": "{self.naptan_id}", "indicator": "{self.indicator}", "name": "{self.name}"}}'
     
 class MonitoredStop(db.Model):
     __tablename__ = "monitored_stop"
 
-    naptan_id = db.Column(db.String, primary_key = True)
-    line_id = db.Column(db.String, db.ForeignKey("line.line_id"))
-    station_name = db.Column(db.String)
-    platform_name = db.Column(db.String)
-    line = db.relationship("Line", uselist = False)
+    naptan_id = db.Column(db.String(15), primary_key = True)
 
 class Arrival(db.Model):
     """Represents one arrival"""
