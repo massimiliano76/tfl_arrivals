@@ -9,6 +9,71 @@ body {
     padding-right: 15px;
 }
 
+div.arrival-card {    
+    height: 40%;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+div.card-content {
+    height: 90%;
+    border-radius: 15px;
+    background-color: #395a71;
+    color: white;       
+}
+
+
+div.card-content-top {
+    height: 30%;
+    align-content: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #535151;
+}
+
+div.card-content-bottom {
+    height: 70%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    background-color: #91c3e9;
+}
+
+
+.arrival-station {
+    height: 100%;
+    
+    font-weight: bold;
+    font-variant: small-caps;
+}
+
+.arrival-table {
+    border: 1px solid #b94a48;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+}
+
+.arrival-header {
+    align-content: center;
+    
+}
+
+.arrival-line {
+    width: 35%
+}
+
+.arrival-expected {
+    width: 5%;
+    text-align: right;
+}
+
+
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,

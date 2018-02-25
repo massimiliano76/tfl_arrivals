@@ -2,30 +2,38 @@
 
 {% block content %}
 
-<div class="row">
-    <div>
-        {% for stop in stops %}
-        <h2>{{stop}}</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Towards</th>
-                    <th>Expected</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for arrival in stops[stop] %}
-                <tr>
-                    <td>{{arrival.line.name}}</td>
-                    <td>{{arrival.towards}}</td>
-                    <td>{{arrival.expected_in_minutes()}} min</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endfor %}
-    </div>
+<div class="arrival-card-container">
+	<div class="row justify-content-center">
+		{% for stop in stops %}
+		<div class="col col-lg-4 col-md-6 arrival-card">
+            <div class="card-content">
+                <div class="card-content-top">
+                    <span class="h2 text-center align-middle arrival-station">{{stop}}</span>                    
+                </div>
+                <div class="card-content-bottom">
+                    <table class="arrival-table">
+                        <thead class="arrival-table arrival-table-head">
+                            <tr>
+                                <th class="arrival-header arrival-line">Line</th>
+                                <th class="arrival-header arrival-towards">Towards</th>
+                                <th class="arrival-header arrival-expected"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="arrival-table arrival-table-body">
+                            {% for arrival in stops[stop] %}
+                            <tr>
+                                <td class="arrival-data arrival-line">{{arrival.line.name}}</td>
+                                <td class="arrival-data arrival-towards">{{arrival.towards}}</td>
+                                <td class="arrival-data arrival-expected">{{arrival.expected_in_minutes()}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+		</div>
+		{% endfor %}
+	</div>
 </div>
 
 {% endblock %}
