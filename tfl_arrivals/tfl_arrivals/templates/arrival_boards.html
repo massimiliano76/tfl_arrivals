@@ -9,8 +9,8 @@
             <div class="card-content">
                 <div class="card-content-top">
                         <div class="row align-items-center card-content-top-inner">
-                            <div class="col h4 text-center arrival-station">
-                                {{stop}}
+                            <div class="col h3 text-center arrival-station">
+                                {{stop|replace("Underground Station", "")}}
                             </div>
                         </div>
                 </div>
@@ -26,7 +26,7 @@
                         <tbody class="arrival-table arrival-table-body">
                             {% for arrival in stops[stop] %}
                             <tr>
-                                <td class="arrival-data arrival-line">{{arrival.line.name}}</td>
+                                <td class="arrival-data arrival-line">{{arrival.line.name|truncate(15)}}</td>
                                 <td class="arrival-data arrival-towards">{{arrival.towards}}</td>
                                 <td class="arrival-data arrival-expected">{{arrival.expected_in_minutes()}}</td>
                             </tr>

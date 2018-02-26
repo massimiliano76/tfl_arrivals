@@ -24,7 +24,7 @@ div.card-content {
 
 
 div.card-content-top {
-    height: 35%;
+    height: 30%;
     align-content: center;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -34,7 +34,7 @@ div.card-content-top {
 }
 
 div.card-content-bottom {
-    height: 65%;
+    height: 70%;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     padding-left: 15px;
