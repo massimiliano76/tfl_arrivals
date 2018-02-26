@@ -42,7 +42,7 @@ def arrivals():
             filter(Arrival.naptan_id == stop.naptan_id).\
             filter(Arrival.ttl > datetime.now()).\
             order_by(Arrival.expected).\
-            limit(5).all()
+            limit(6).all()
 
     return render_template("arrival_boards.html", stops=arrivals_by_stop)    
 
