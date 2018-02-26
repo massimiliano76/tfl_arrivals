@@ -24,39 +24,41 @@ div.card-content {
 
 
 div.card-content-top {
-    height: 30%;
+    height: 35%;
     align-content: center;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     padding-left: 15px;
     padding-right: 15px;
-    background-color: #535151;
+    background-color: #1a2832;
 }
 
 div.card-content-bottom {
-    height: 70%;
+    height: 65%;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
-    background-color: #91c3e9;
+    background-color: #547fa0;
 }
 
+.card-content-top-inner {
+    height: 100%;
+}
 
 .arrival-station {
-    height: 100%;
-    
     font-weight: bold;
     font-variant: small-caps;
 }
 
 .arrival-table {
-    border: 1px solid #b94a48;
+    /*border: 1px solid #b94a48;*/
     width: 95%;
     margin-left: auto;
     margin-right: auto;
     color: white;
+    font-size: large;
 }
 
 .arrival-header {
