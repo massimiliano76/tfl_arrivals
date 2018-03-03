@@ -14,27 +14,36 @@ function setHighlightedLine(list, naptan_id) {
     updateAddButtonEnabledState();
 }
 
-function showAddResultMessage(alert, text) {
+
+function showAddResultMessage(text, success) {
+    row = document.createElement("div");
+    row.classList = "row position-absolute justify-content-center slide-in-out";
+
+    alert = document.createElement("div");
+    alert.classList = "col-6 align-middle alert"
+    alert.classList.add(success ? "alert-success" : "alert-danger");
+    
     alert.innerHTML = text;
-    alert.classList.add("in");
-    //alert.hidden = false;
+    row.appendChild(alert);
+
+    document.body.insertBefore(row, document.body.firstChild);
+    setTimeout("alert.remove();", 4000);
 }
 
 function addStop() {
-    showAddResultMessage(add_success_alert, stop.innerHTML + " added");
-    //var xhr = new XMLHttpRequest();
-    //stop = selectedStop()
-    //xhr.open('POST', "http://localhost:5555/add/add_monitored_stop/" + stop.getAttribute("data-naptan-id"), true);
-    //xhr.onreadystatechange = function () {
-    //    if (xhr.readyState == 4) {
-    //        showAddResultMessage(add_success_alert, stop.innerHTML + " added");
-    //    }
-    //    else {
-    //        showAddResultMessage(add_success_error, "Cannot add " + stop.innerHTML);
-    //    }
-    //}
+    var xhr = new XMLHttpRequest();
+    stop = selectedStop()
+    xhr.open('POST', "http://localhost:5555/api/add_monitored_stop/" + stop.getAttribute("data-naptan-id"), true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            showAddResultMessage(stop.innerHTML + " added", true);
+        }
+        else {
+            showAddResultMessage("Cannot add " + stop.innerHTML, false);
+        }
+    }
      
-    //xhr.send();
+    xhr.send();
 }
 
 function clearStops() {

@@ -4,8 +4,7 @@
 
 <a href="{{url_for('arrivals')}}">Arrivals</a>
 
-
-<div class="container container-add-stop">
+<div class="container container-add-stop" id="container-add-stop">
     <div class="row">
         <div class="col-12 col-md-4">
             <div class="input-group">
@@ -33,7 +32,7 @@
                         <i class="material-icons">search</i>
                     </span>
                 </div>
-                <input id="stop_search" type="text" class="form-control"  placeholder="Search stop by name" />
+                <input id="stop_search" type="text" class="form-control" placeholder="Search stop by name" />
             </div>
             <div class="stop-list-container">
                 <ul class="list-group stop-list" id="stop_list"></ul>
@@ -43,13 +42,6 @@
             </div>
         </div>
     </div>
-        <!--<div class="row">
-            <div class="col-12 col-md-4"></div>
-            <div class="col-12 col-md-8"> 
-            
-            </div>
-        </div>-->
-
 </div>
 
 <script src="/static/scripts/add_stop.js"></script>

@@ -1,4 +1,5 @@
 body {
+    position: relative;
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -75,35 +76,68 @@ div.card-content-bottom {
     text-align: right;
 }
 
+/****************/
+/* Add new stop */
+/****************/
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.container-add-stop {
+    height: 50%;
 }
 
-/* styles for validation helpers */
-.field-validation-error {
-    color: #b94a48;
+.line-selector {
 }
 
-.field-validation-valid {
-    display: none;
+.line-list-container {
+    height: 100%;
 }
 
-input.input-validation-error {
-    border: 1px solid #b94a48;
+.line-list, .stop-list {
+    border: 1px solid #999999;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
-input[type="checkbox"].input-validation-error {
-    border: 0 none;
+
+.stop-selector {
 }
 
-.validation-summary-errors {
-    color: #b94a48;
+.red-border {
+    border: 1px solid #ff0000;
 }
 
-.validation-summary-valid {
-    display: none;
+.full-width {
+    width: 100%;
+}
+
+
+.slide-in-out {    
+    top: 0px;
+    width: 100%;
+    animation: animateinout 4s;
+    text-align: center;
+    z-index: 100;
+}
+
+@keyframes animateinout {
+    0% {
+        top: -200px;
+        opacity: 0
+    }
+
+    25% {
+        top: 50px;
+        opacity: 1
+    }
+
+    75% {
+        top: 50px;
+        opacity: 1
+    }
+
+    100% {
+        top: -200px;
+        opacity: 0
+    }
+
 }
