@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<a href="{{url_for('add_stop')}}">Add stop</a>
+
 <div class="arrival-card-container">
 	<div class="row justify-content-center">
 		{% for stop in stops %}

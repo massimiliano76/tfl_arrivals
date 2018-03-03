@@ -44,12 +44,22 @@ def arrivals():
             order_by(Arrival.expected).\
             limit(6).all()
 
-    return render_template("arrival_boards.html", stops=arrivals_by_stop)    
+    return render_template("arrival_boards.html", title="Arrivals", stops=arrivals_by_stop)    
 
-
+@app.route('/add_stop')
+def add_stop():
+    lines = db.session.query(Line).all()
+    """Renders the Add stop page."""
+    return render_template(
+        'add_stop.html',
+        title='Add Stop',
+        year=datetime.now().year,
+        message='Your contact page.',
+        lines=lines
+    )
 
 @app.route('/api/stops/<string:line_id>')
-def line_stops(line_id):
+def api_line_stops(line_id):
     def get_all_stops_for_line():
         return db.session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
 
@@ -65,7 +75,7 @@ def line_stops(line_id):
     
 
 @app.route('/api/add_monitored_stop/<string:new_naptan_id>', methods=["POST"])
-def add_monitored_stop(new_naptan_id):    
+def api_add_monitored_stop(new_naptan_id):    
     if db.session.query(StopPoint).filter(StopPoint.naptan_id == new_naptan_id).count() == 0:
         populate_stop(new_naptan_id)
 
