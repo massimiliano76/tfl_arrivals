@@ -13,19 +13,6 @@ def _create_session():
     return scoped_session(session_factory)
 
 
-
-def populate_lines():
-    logger = logging.getLogger(__name__)
-    session = _create_session()
-    for mode in modes:
-        logger.info(f"Fetching mode {mode}")
-        for line in  parser.parse_lines(lines_fetcher(mode)):
-            logger.debug(f"Adding line {line.name} to database")
-            session.add(line)
-
-    session.commit()
-
-
 def populate_line_stops(line: Line, session):
     logger = logging.getLogger(__name__)
 

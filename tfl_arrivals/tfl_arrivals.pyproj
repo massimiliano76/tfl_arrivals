@@ -22,6 +22,8 @@
     <WebBrowserPort>5555</WebBrowserPort>
     <CommandLineArguments>
     </CommandLineArguments>
+    <InterpreterArguments>
+    </InterpreterArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +39,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\arrival_data.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tfl_arrivals\db_cache.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tfl_arrivals\parser.py">

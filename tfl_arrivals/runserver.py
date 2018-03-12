@@ -4,7 +4,7 @@ This script runs the tfl_arrivals application using a development server.
 
 import logging
 from os import environ
-from tfl_arrivals import app, arrivals_collector, db, prepopulate
+from tfl_arrivals import app, arrivals_collector, db
 from tfl_arrivals.fetcher import url_fetcher
 from os import path
 import time
@@ -31,7 +31,6 @@ def setup_logger():
 
 def init_db():    
     db.create_all()
-    prepopulate.populate_lines()
 
 if __name__ == '__main__':
     logger = setup_logger()
@@ -51,7 +50,7 @@ if __name__ == '__main__':
     collector.start_collecting()
     
     app.config.update(dict(
-        DEBUG=False
+        DEBUG=True
         ))
 
     logger.info(f"Start listening on {HOST}:{PORT}")

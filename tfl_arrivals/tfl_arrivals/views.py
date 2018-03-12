@@ -4,7 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
-from tfl_arrivals import app
+from tfl_arrivals import app, db_cache
 from tfl_arrivals.arrival_data import Arrival, MonitoredStop, StopPoint, Line, db
 from tfl_arrivals.prepopulate import populate_line_stops, populate_stop
 import json
@@ -31,25 +31,27 @@ def contact():
 
 @app.route('/arrivals')
 def arrivals():    
-    stops = db.session.query(MonitoredStop).all()
+    stops = db.session.query(MonitoredStop).all() ###
     
     arrivals_by_stop = {}
     for stop in stops:
         logging.info(f"stop.naptan_id = {stop.naptan_id}")
         name = db.session.query(StopPoint.name).filter(StopPoint.naptan_id == stop.naptan_id).scalar()
+        ###
         logging.info(f"name = {name}")
         arrivals_by_stop[name] = db.session.query(Arrival).\
             filter(Arrival.naptan_id == stop.naptan_id).\
             filter(Arrival.ttl > datetime.now()).\
             order_by(Arrival.expected).\
             limit(6).all()
+        ###
 
     return render_template("arrival_boards.html", title="Arrivals", stops=arrivals_by_stop)    
 
 @app.route('/add_stop')
 def add_stop():
-    lines = db.session.query(Line).all()
     """Renders the Add stop page."""
+    lines = db_cache.get_all_lines(db.session)
     return render_template(
         'add_stop.html',
         title='Add Stop',
@@ -62,6 +64,7 @@ def add_stop():
 def api_line_stops(line_id):
     def get_all_stops_for_line():
         return db.session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
+        ###
 
     stops = get_all_stops_for_line()
     if len(stops) == 0:
@@ -78,8 +81,10 @@ def api_line_stops(line_id):
 def api_add_monitored_stop(new_naptan_id):    
     if db.session.query(StopPoint).filter(StopPoint.naptan_id == new_naptan_id).count() == 0:
         populate_stop(new_naptan_id)
+        ###
 
     new_stop = MonitoredStop(naptan_id = new_naptan_id)
+    ###
     db.session.add(new_stop)
     db.session.commit()    
     return ""

@@ -3,13 +3,28 @@ from typing import Callable, NewType
 from math import ceil
 from functools import total_ordering
 from tfl_arrivals import db
-
+import enum
 
 VehicleId = NewType("VehicleId", str)
 StopId = NewType("VehicleId", str)
 LineId = NewType("LineId", str)
 
 modes = ["tube", "bus"]
+
+class CachedDataType(enum.Enum):
+    line_list = 1
+    stop_point = 2
+    arrival = 3
+    line_stops = 4
+
+
+class CacheTimestamp(db.Model):
+    __tablename__ = "cache_timestamp"
+    id = db.Column(db.Integer, primary_key = True)
+    data_type = db.Column(db.Enum(CachedDataType), nullable = False)
+    data_id = db.Column(db.String(30), nullable = True)
+    update_time = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 line_stops = db.Table("line_stops", db.metadata,
                    db.Column("line_id", db.String(30), db.ForeignKey("line.line_id")),
