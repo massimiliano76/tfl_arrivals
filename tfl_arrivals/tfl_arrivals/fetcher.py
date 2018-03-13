@@ -21,15 +21,9 @@ def line_stops_fetcher(line_id: str):
 def stop_fetcher(naptan_id: str):
     return fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}")
 
-## Fetches arrival data from previously dumpes json files
-#class file_fetcher:
-#    def __init__(self, base_name):
-#        self.base_name = base_name
-#        self.count = 0
+def line_data_fetcher(line_id: str):
+    return fetch(f"https://api.tfl.gov.uk/Line/{line_id}")
 
-#    def __call__(self):
-#        f = open(f"{self.base_name}_{self.count}.json", "r")
-#        return json.loads(f.readline())
 
 
 

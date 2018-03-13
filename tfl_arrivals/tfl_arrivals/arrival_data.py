@@ -16,6 +16,7 @@ class CachedDataType(enum.Enum):
     stop_point = 2
     arrival = 3
     line_stops = 4
+    line_data = 5
 
 
 class CacheTimestamp(db.Model):

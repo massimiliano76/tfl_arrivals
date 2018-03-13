@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
 from tfl_arrivals import app, db_cache
 from tfl_arrivals.arrival_data import Arrival, MonitoredStop, StopPoint, Line, db
-from tfl_arrivals.prepopulate import populate_line_stops, populate_stop
+from tfl_arrivals.prepopulate import populate_stop
 import json
 from os import path
 import logging
@@ -62,17 +62,7 @@ def add_stop():
 
 @app.route('/api/stops/<string:line_id>')
 def api_line_stops(line_id):
-    def get_all_stops_for_line():
-        return db.session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
-        ###
-
-    stops = get_all_stops_for_line()
-    if len(stops) == 0:
-        line = db.session.query(Line).filter(Line.line_id == line_id).one()
-        populate_line_stops(line, db.session)
-        stops = get_all_stops_for_line()
-    
-    db.session.commit()
+    stops = db_cache.get_stops_of_line(db.session, line_id)
     resp = Response("[" + ", ".join([stop.json() for stop in stops]) + "]", status=200, mimetype='application/json')
     return resp
     

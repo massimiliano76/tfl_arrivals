@@ -13,19 +13,6 @@ def _create_session():
     return scoped_session(session_factory)
 
 
-def populate_line_stops(line: Line, session):
-    logger = logging.getLogger(__name__)
-
-    logger.info(f"Fetching stops for line {line.line_id}")
-    for stop in parser.parse_line_stops(line_stops_fetcher(line.line_id)):
-        db_stop = session.query(StopPoint).filter(StopPoint.naptan_id == stop.naptan_id).one_or_none()
-        if db_stop is not None:
-            stop = db_stop
-        stop.lines.append(line)
-        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")        
-
-    
-
 def populate_stop(naptan_id: StopId):
     logger = logging.getLogger(__name__)
     session = _create_session()

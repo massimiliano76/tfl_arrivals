@@ -28,6 +28,11 @@ def parse_lines(raw_json: str) -> List[Line]:
         lines.append(line)
     return lines
 
+def parse_line(raw_json: str) -> Line:
+    raw = json.loads(raw_json)[0]
+    return Line(line_id = raw["id"],
+                name = raw["name"],
+                mode_name = raw["modeName"])
 
 def _parse_stop(stop_json) -> StopPoint:    
     return StopPoint(naptan_id = stop_json["naptanId"],
