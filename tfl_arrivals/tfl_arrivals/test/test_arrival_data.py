@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from tfl_arrivals.arrival_data import Arrival, arrival_display_line
 
 def test_construction():
-    now = datetime.now()
+    now = datetime.utcnow()
     expected = now + timedelta(minutes = 2, seconds = 59)
     ttl = now + timedelta(minutes = 15)
     arr = Arrival(vehicle_id=234, naptan_id="940GZZLUKNB", towards="Acton Town", expected = expected, ttl = ttl)
@@ -61,12 +61,12 @@ def test_expected_in_seconds_mocked():
 
 def test_expected_in_seconds_real():    
     delta = timedelta(seconds = 29)
-    expected = datetime.now() + delta
+    expected = datetime.utcnow() + delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert 29 == arr.expected_in_seconds()
 
     delta = timedelta(seconds = 99)
-    expected = datetime.now() + delta
+    expected = datetime.utcnow() + delta
     arr = Arrival(vehicle_id=243, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert 99 == arr.expected_in_seconds()
 
@@ -105,12 +105,12 @@ def test_expected_in_minutes_mocked():
 
 def test_expected_in_minutes_real():    
     delta = timedelta(seconds = 29)
-    expected = datetime.now() + delta
+    expected = datetime.utcnow() + delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert 1 == arr.expected_in_minutes()
 
     delta = timedelta(seconds = 99)
-    expected = datetime.now() + delta
+    expected = datetime.utcnow() + delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert 2 == arr.expected_in_minutes()
 
@@ -145,22 +145,22 @@ def test_is_expired_mocked():
 
 def test_is_expired_real():
     delta = timedelta(seconds = 29)
-    expected = datetime.now() + delta
+    expected = datetime.utcnow() + delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert not arr.is_expired()
 
     delta = timedelta(seconds = 29)
-    expected = datetime.now() - delta
+    expected = datetime.utcnow() - delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert arr.is_expired()
 
     delta = timedelta(milliseconds = 2)
-    expected = datetime.now() - delta
+    expected = datetime.utcnow() - delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert arr.is_expired()
     
     delta = timedelta(minutes= 20)
-    expected = datetime.now() - delta
+    expected = datetime.utcnow() - delta
     arr = Arrival(vehicle_id=234, naptan_id="Y", towards="X", expected=expected, ttl=expected)
     assert arr.is_expired()
 
