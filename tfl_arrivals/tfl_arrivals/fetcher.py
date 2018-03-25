@@ -8,8 +8,7 @@ def fetch(url):
     return response.text
 
 
-def url_fetcher(naptan_id: str):
-    #return fetch(f"https://api.tfl.gov.uk/Line/{line_id}/Arrivals/{stop_id}?direction=inbound")
+def arrival_fetcher(naptan_id: str):
     return fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}/Arrivals")
 
 def lines_fetcher(mode: str):
