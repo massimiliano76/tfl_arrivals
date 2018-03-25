@@ -24,7 +24,7 @@ def contact():
     return render_template(
         'contact.html',
         title='Contact',
-        year=datetime.now().year,
+        year=datetime.utcnow().year,
         message='Your contact page.'
     )
 
@@ -36,14 +36,18 @@ def arrivals():
     arrivals_by_stop = {}
     for stop in stops:
         logging.info(f"stop.naptan_id = {stop.naptan_id}")
-        name = db.session.query(StopPoint.name).filter(StopPoint.naptan_id == stop.naptan_id).scalar()
-        ###
+                
+        name = db_cache.get_stop_point(db.session, stop.naptan_id).name
+        
         logging.info(f"name = {name}")
+        logging.info(f"datetime.utcnow = {datetime.utcnow()}")
+        logging.info(f"stop.naptan_id = {stop.naptan_id}")
         arrivals_by_stop[name] = db.session.query(Arrival).\
             filter(Arrival.naptan_id == stop.naptan_id).\
-            filter(Arrival.ttl > datetime.now()).\
+            filter(Arrival.ttl > datetime.utcnow()).\
             order_by(Arrival.expected).\
             limit(6).all()
+        logging.info(f"arrivals_by_stop[{name}] = " + str(arrivals_by_stop[name]))
         ###
 
     return render_template("arrival_boards.html", title="Arrivals", stops=arrivals_by_stop)    
@@ -55,7 +59,7 @@ def add_stop():
     return render_template(
         'add_stop.html',
         title='Add Stop',
-        year=datetime.now().year,
+        year=datetime.utcnow().year,
         message='Your contact page.',
         lines=lines
     )
@@ -69,10 +73,6 @@ def api_line_stops(line_id):
 
 @app.route('/api/add_monitored_stop/<string:new_naptan_id>', methods=["POST"])
 def api_add_monitored_stop(new_naptan_id):    
-    if db.session.query(StopPoint).filter(StopPoint.naptan_id == new_naptan_id).count() == 0:
-        populate_stop(new_naptan_id)
-        ###
-
     new_stop = MonitoredStop(naptan_id = new_naptan_id)
     ###
     db.session.add(new_stop)
@@ -87,7 +87,7 @@ def api_add_monitored_stop(new_naptan_id):
 #    return render_template(
 #        'arrival_boards.html',
 #        title='Arrivals',
-#        year=datetime.now().year,
+#        year=datetime.utcnow().year,
 #    )
 
 
@@ -97,6 +97,6 @@ def api_add_monitored_stop(new_naptan_id):
 #    return render_template(
 #        'contact.html',
 #        title='About',
-#        year=datetime.now().year,
+#        year=datetime.utcnow().year,
 #        message='Your application description page.'
 #    )

@@ -11,7 +11,7 @@ module_logger = logging.getLogger(__name__)
 
 ### All lines 
 def __cache_lines(session: scoped_session, id: str) -> None:
-    """Fetches the data for all lines from TFL ans stores in the database"""
+    """Fetches the data for all lines from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
     for mode in modes:
         logger.info(f"Fetching mode {mode}")
@@ -29,7 +29,7 @@ def __delete_lines(session: scoped_session, id: str) -> None:
 
 ### Single line
 def __cache_line_data(session: scoped_session, line_id: str) -> None:
-    """Fetches the data for a single line from TFL ans stores in the database"""
+    """Fetches the data for a single line from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
     line = parser.parse_line(line_data_fetcher(line_id))
     logger.debug(f"Adding line {line.name} to database")
@@ -44,7 +44,7 @@ def __delete_line_data(session: scoped_session, id: str) -> None:
 
 ### All stops for one line
 def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
-    """Fetches all stops data for a single line from TFL ans stores in the database"""
+    """Fetches all stops data for a single line from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
     line = get_line(session, line_id)
 
@@ -54,6 +54,8 @@ def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
         if db_stop is not None:
             stop = db_stop
         stop.lines.append(line)
+        
+        __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
         logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")   
     session.commit()
 
@@ -64,6 +66,21 @@ def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
     session.commit()
 
 
+### Single Stop Point
+def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
+    """Fetches the data for a single stop point from TFL and stores in the database"""
+    logger = logging.getLogger(__name__)
+    stop = parser.parse_stop(stop_fetcher(naptan_id))
+    logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")   
+    session.add(stop)
+    session.commit()
+
+def __delete_stop_point(session: scoped_session, id: str) -> None:
+    """Deletes a single line data from the database"""
+    session.query(StopPoint).filter(StopPoint.naptan_id == id).delete()
+    session.commit()
+
+### Cache update timestamp helpers
 def __get_update_timestamp(session: scoped_session, type: CachedDataType, id: str = None) -> datetime:
     """Gets a timestamp of the last update for a given CachedDataType and id pair.
     In the case of CachedDataType.line_list the id is not used"""    
@@ -117,6 +134,9 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
         desc.update_func(session, desc.id)
         __save_update_timestamp(session, desc.type)
 
+
+
+### Public methods 
 def get_all_lines(session: scoped_session) -> List[Line]:
     """Retrieves all lines, using the local database if possible"""
     ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1), 
@@ -124,8 +144,11 @@ def get_all_lines(session: scoped_session) -> List[Line]:
     __update_cache(session, ud)
     return session.query(Line).all()
 
-def get_line(session: scoped_session, line_id) -> Line:
-    """Retrieves one line, using the local database if possible"""
+def get_line(session: scoped_session, line_id: LineId) -> Line:
+    """Retrieves basic data of one line, using the local database if possible. 
+    If stop data is present in the database it is also returned, but 
+    this funtion doesn't fetch it if missing. 
+    Use get_stops_of_lines if stop data is required"""
     ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1), 
                              __cache_line_data, __delete_line_data)
     __update_cache(session, ud)
@@ -139,14 +162,9 @@ def get_stops_of_line(session: scoped_session, line_id: LineId) -> List[StopPoin
     return session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
    
 
-#def populate_stop(naptan_id: StopId):
-#    logger = logging.getLogger(__name__)
-#    session = _create_session()
-
-#    logger.info(f"Fetching stop {naptan_id}")
-
-#    stop = parser.parse_stop(stop_fetcher(naptan_id))        
-#    logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")        
-#    session.add(stop)
-#    session.commit()
+def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
+    ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1), 
+                             __cache_stop_point, __delete_stop_point)
+    __update_cache(session, ud)
+    return session.query(StopPoint).filter(StopPoint.naptan_id == naptan_id).one()
 
