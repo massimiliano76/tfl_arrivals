@@ -61,12 +61,19 @@ def api_line_stops(line_id):
     
 
 @app.route('/api/add_monitored_stop/<string:new_naptan_id>', methods=["POST"])
-def api_add_monitored_stop(new_naptan_id):    
+def api_add_monitored_stop(new_naptan_id):
     new_stop = MonitoredStop(naptan_id = new_naptan_id)
     ###
     db.session.add(new_stop)
     db.session.commit()    
     return ""
+
+@app.route('/api/get_monitored_stops')
+def get_add_monitored_stops():
+    stops = db.session.query(MonitoredStop).all() ###
+    resp = Response(json.dumps([stop.naptan_id for stop in stops]), status=200, mimetype='application/json')
+    return resp
+
 
 @app.route('/api/arrivals/<string:naptan_id>', methods=["POST"])
 def api_arrivals(naptan_id):
