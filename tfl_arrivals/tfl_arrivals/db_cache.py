@@ -2,8 +2,8 @@ import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from tfl_arrivals import db_path, parser
-from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType
-from tfl_arrivals.fetcher import lines_fetcher, line_stops_fetcher, stop_fetcher, line_data_fetcher
+from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival
+from tfl_arrivals.fetcher import lines_fetcher, line_stops_fetcher, stop_fetcher, line_data_fetcher, arrival_fetcher
 from datetime import datetime, timedelta
 from typing import List, Callable
 
@@ -80,6 +80,27 @@ def __delete_stop_point(session: scoped_session, id: str) -> None:
     session.query(StopPoint).filter(StopPoint.naptan_id == id).delete()
     session.commit()
 
+
+### Arrivals at a single stop point
+def __cache_arrivals(session: scoped_session, naptan_id: str) -> None:
+    """Fetches the arrivals for a single stop point from TFL and stores in the database"""
+    logger = logging.getLogger(__name__)
+    arrivals = parser.parse_arrivals(arrival_fetcher(naptan_id))
+    logger.debug(f"Adding arrivals for '{naptan_id}' to database")
+    for arrival in arrivals:
+        db_arrival = session.query(Arrival).filter(Arrival.arrival_id == arrival.arrival_id).one_or_none()
+        if db_arrival is not None:
+            db_arrival.update_with(arrival)
+        else:
+            session.add(arrival)
+    session.commit()
+
+def __delete_arrivals(session: scoped_session, id: str) -> None:
+    """Deletes a arrivals for a single stop point from the database"""
+    session.query(Arrival).filter(Arrival.naptan_id == id).delete()
+    session.commit()
+
+
 ### Cache update timestamp helpers
 def __get_update_timestamp(session: scoped_session, type: CachedDataType, id: str = None) -> datetime:
     """Gets a timestamp of the last update for a given CachedDataType and id pair.
@@ -129,10 +150,10 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
     logger.debug(f"Cache for type {desc.type} last updated: {line_updated}")
 
     if line_updated == None or (datetime.utcnow() - line_updated) > desc.valid_for:
-        logger.info(f"Refreshing {type} data")
+        logger.info(f"Refreshing {desc.type} data, id = '{desc.id}'")
         desc.delete_func(session, desc.id)
         desc.update_func(session, desc.id)
-        __save_update_timestamp(session, desc.type)
+        __save_update_timestamp(session, desc.type, desc.id)
 
 
 
@@ -167,4 +188,15 @@ def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
                              __cache_stop_point, __delete_stop_point)
     __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.naptan_id == naptan_id).one()
+
+def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
+    ud = __UpdateDescription(CachedDataType.arrival, naptan_id, timedelta(minutes=1), 
+                             __cache_arrivals, __delete_arrivals)
+    __update_cache(session, ud)
+    
+    return session.query(Arrival).\
+        filter(Arrival.naptan_id == naptan_id).\
+        filter(Arrival.ttl > datetime.utcnow()).\
+        order_by(Arrival.expected).\
+        limit(6).all()
 

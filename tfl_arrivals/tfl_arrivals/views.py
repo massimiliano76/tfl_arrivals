@@ -36,19 +36,8 @@ def arrivals():
     arrivals_by_stop = {}
     for stop in stops:
         logging.info(f"stop.naptan_id = {stop.naptan_id}")
-                
         name = db_cache.get_stop_point(db.session, stop.naptan_id).name
-        
-        logging.info(f"name = {name}")
-        logging.info(f"datetime.utcnow = {datetime.utcnow()}")
-        logging.info(f"stop.naptan_id = {stop.naptan_id}")
-        arrivals_by_stop[name] = db.session.query(Arrival).\
-            filter(Arrival.naptan_id == stop.naptan_id).\
-            filter(Arrival.ttl > datetime.utcnow()).\
-            order_by(Arrival.expected).\
-            limit(6).all()
-        logging.info(f"arrivals_by_stop[{name}] = " + str(arrivals_by_stop[name]))
-        ###
+        arrivals_by_stop[name] = db_cache.get_arrivals(db.session, stop.naptan_id)
 
     return render_template("arrival_boards.html", title="Arrivals", stops=arrivals_by_stop)    
 
