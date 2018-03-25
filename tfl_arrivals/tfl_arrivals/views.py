@@ -68,6 +68,18 @@ def api_add_monitored_stop(new_naptan_id):
     db.session.commit()    
     return ""
 
+@app.route('/api/arrivals/<string:naptan_id>', methods=["POST"])
+def api_arrivals(naptan_id):
+    name = db_cache.get_stop_point(db.session, naptan_id).name
+    arrivals = db_cache.get_arrivals(db.session, naptan_id)
+    response_data = {"naptan_id": naptan_id,
+                     "name": name,
+                     "arrivals": [{"towards" : arr.towards, "expected" : str(arr.expected)} for arr in arrivals]}
+
+    resp = Response(json.dumps(response_data) , status=200, mimetype='application/json')
+    return resp
+
+
 #@app.route('/arrivals')
 #def home():
 #    """Renders the next three arrivals at all monitored stations"""
