@@ -74,15 +74,15 @@ class Arrival(db.Model):
                f"vehicle_id='{self.vehicle_id}', naptan_id='{self.naptan_id}', " +\
                f"towards='{self.towards}', expected='{self.expected}', ttl='{self.ttl}')"
     
-    def expected_in_minutes(self, now: Callable[[], datetime]=datetime.now) -> int:
+    def expected_in_minutes(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
         delta = self.expected - now()
         return ceil(delta.seconds/60)
 
-    def expected_in_seconds(self, now: Callable[[], datetime]=datetime.now) -> int:
+    def expected_in_seconds(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
         delta = self.expected - now()
         return delta.seconds
 
-    def is_expired(self, now: Callable[[], datetime]=datetime.now) -> bool:
+    def is_expired(self, now: Callable[[], datetime]=datetime.utcnow) -> bool:
         return self.ttl < now()
 
     def update_with(self, other):
@@ -104,6 +104,6 @@ class Arrival(db.Model):
     def __ne__(self, other) -> bool:
         return not self == other
 
-def arrival_display_line(arrival: Arrival, now: Callable[[], datetime]=datetime.now):
+def arrival_display_line(arrival: Arrival, now: Callable[[], datetime]=datetime.utcnow):
     return f"{arrival.towards[:30]:30} {arrival.expected_in_minutes(now):2}"
 
