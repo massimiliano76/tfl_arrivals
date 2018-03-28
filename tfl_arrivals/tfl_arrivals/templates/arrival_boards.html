@@ -2,13 +2,70 @@
 
 {% block content %}
 
-<a href="{{url_for('add_stop')}}">Add stop</a>
+<div class="modal fade" id="stop_add_panel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add New Stop</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container container-add-stop" id="container-add-stop">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="material-icons">search</i>
+                                    </span>
+                                </div>
+                                <input id="line_search" type="text" class="form-control" placeholder="Search line by name" />
+                            </div>
+                            <div class="line-list-container">
+                                <ul class="list-group line-list" id="line_list">
+                                    {% for line in lines %}
+                                    <li class="list-group-item line-list-item" data-naptan-id="{{line.line_id}}" onclick="selectLine(this)">
+                                        {{line.name}}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="material-icons">search</i>
+                                    </span>
+                                </div>
+                                <input id="stop_search" type="text" class="form-control" placeholder="Search stop by name" />
+                            </div>
+                            <div class="stop-list-container">
+                                <ul class="list-group stop-list" id="stop_list"></ul>
+                            </div>
+                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="add_stop" class="btn btn-primary btn-large" disabled onclick="addStop()">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button type="button" class="btn btn-large" data-toggle="modal" data-target="#stop_add_panel">Add</button>
+
+
 <div class="arrival-card-container">
-	<div class="row justify-content-center" id="arrival_cards">
-		
-	</div>
+    <div class="row justify-content-center" id="arrival_cards">
+    </div>
 </div>
 
 <script src="/static/scripts/arrivals.js"></script>
+<script src="/static/scripts/add_stop.js"></script>
 
 {% endblock %}

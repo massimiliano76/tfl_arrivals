@@ -31,15 +31,8 @@ def contact():
 
 @app.route('/arrivals')
 def arrivals():    
-    stops = db.session.query(MonitoredStop).all() ###
-    
-    arrivals_by_stop = {}
-    for stop in stops:
-        logging.info(f"stop.naptan_id = {stop.naptan_id}")
-        name = db_cache.get_stop_point(db.session, stop.naptan_id).name
-        arrivals_by_stop[name] = db_cache.get_arrivals(db.session, stop.naptan_id)
-
-    return render_template("arrival_boards.html", title="Arrivals", stops=arrivals_by_stop)    
+    lines = db_cache.get_all_lines(db.session)
+    return render_template("arrival_boards.html", title="London Arrivals", lines=lines)    
 
 @app.route('/add_stop')
 def add_stop():
