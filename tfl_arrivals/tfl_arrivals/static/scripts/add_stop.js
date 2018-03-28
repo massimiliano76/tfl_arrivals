@@ -31,19 +31,8 @@ function showAddResultMessage(text, success) {
 }
 
 function addStop() {
-    var xhr = new XMLHttpRequest();
-    stop = selectedStop()
-    xhr.open('POST', "http://localhost:5555/api/add_monitored_stop/" + stop.getAttribute("data-naptan-id"), true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            showAddResultMessage(stop.innerHTML + " added", true);
-        }
-        else {
-            showAddResultMessage("Cannot add " + stop.innerHTML, false);
-        }
-    }
-     
-    xhr.send();
+    let id = selectedStop().getAttribute("data-naptan-id")
+    addMonitoredStop(id);
 }
 
 function clearStops() {

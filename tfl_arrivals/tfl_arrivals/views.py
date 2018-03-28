@@ -60,28 +60,17 @@ def api_line_stops(line_id):
     return resp
     
 
-@app.route('/api/add_monitored_stop/<string:new_naptan_id>', methods=["POST"])
-def api_add_monitored_stop(new_naptan_id):
-    new_stop = MonitoredStop(naptan_id = new_naptan_id)
-    ###
-    db.session.add(new_stop)
-    db.session.commit()    
-    return ""
-
-@app.route('/api/get_monitored_stops')
-def get_add_monitored_stops():
-    stops = db.session.query(MonitoredStop).all() ###
-    resp = Response(json.dumps([stop.naptan_id for stop in stops]), status=200, mimetype='application/json')
-    return resp
-
-
-@app.route('/api/arrivals/<string:naptan_id>', methods=["POST"])
+@app.route('/api/arrivals/<string:naptan_id>')
 def api_arrivals(naptan_id):
-    name = db_cache.get_stop_point(db.session, naptan_id).name
+    stop = db_cache.get_stop_point(db.session, naptan_id)
     arrivals = db_cache.get_arrivals(db.session, naptan_id)
-    response_data = {"naptan_id": naptan_id,
-                     "name": name,
-                     "arrivals": [{"towards" : arr.towards, "expected" : str(arr.expected)} for arr in arrivals]}
+    response_data = {"naptanId": naptan_id,
+                     "name": stop.name,
+                     "indicator": stop.indicator,
+                     "arrivals": [{"towards" : arr.towards, 
+                                   "expected" : str(arr.expected),
+                                   "lineId": arr.line.name} for arr in arrivals]
+                     }
 
     resp = Response(json.dumps(response_data) , status=200, mimetype='application/json')
     return resp
