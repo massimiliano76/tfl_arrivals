@@ -33,6 +33,7 @@ function showAddResultMessage(text, success) {
 function addStop() {
     let id = selectedStop().getAttribute("data-naptan-id")
     addMonitoredStop(id);
+    refreshArrivalDivs();
 }
 
 function clearStops() {
