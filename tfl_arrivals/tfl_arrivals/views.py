@@ -6,7 +6,6 @@ from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
 from tfl_arrivals import app, db_cache
 from tfl_arrivals.arrival_data import Arrival, MonitoredStop, StopPoint, Line, db
-from tfl_arrivals.prepopulate import populate_stop
 import json
 from os import path
 import logging
