@@ -163,7 +163,7 @@ def get_all_lines(session: scoped_session) -> List[Line]:
     ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1), 
                              __cache_lines, __delete_lines)
     __update_cache(session, ud)
-    return session.query(Line).all()
+    return session.query(Line).order_by(Line.mode_name.desc(),Line.name).all()
 
 def get_line(session: scoped_session, line_id: LineId) -> Line:
     """Retrieves basic data of one line, using the local database if possible. 
