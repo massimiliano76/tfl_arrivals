@@ -64,8 +64,13 @@ def api_arrivals(naptan_id):
                                    "lineId": arr.line.name} for arr in arrivals]
                      }
 
-    resp = Response(json.dumps(response_data) , status=200, mimetype='application/json')
+    resp = Response(json.dumps(response_data), status=200, mimetype='application/json')
     return resp
+
+@app.route('/api/stop/<string:naptan_id>')
+def api_stop_data(naptan_id):
+    stop = db_cache.get_stop_point(db.session, naptan_id)
+    return Response(stop.json(), status=200, mimetype='application/json')
 
 
 #@app.route('/arrivals')
