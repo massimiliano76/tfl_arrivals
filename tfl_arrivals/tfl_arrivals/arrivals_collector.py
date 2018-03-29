@@ -1,5 +1,5 @@
 from typing import Callable, List
-from tfl_arrivals import parser, db_path
+from tfl_arrivals import db_path
 from tfl_arrivals.arrival_data import Arrival, MonitoredStop
 import time
 from threading import Thread
@@ -23,7 +23,7 @@ class arrivals_collector(object):
     def collect(self, session) -> List[Arrival]:
         stops = session.query(MonitoredStop).all()
         self.logger.debug(f"Colecting arrival info for stops: {stops}")
-        all_arrivals = [parser.parse_arrivals(self.fetcher(stop.naptan_id)) for stop in stops]
+        all_arrivals = [fetcher(stop.naptan_id) for stop in stops]
         return list(itertools.chain.from_iterable(all_arrivals))
 
     def start_collecting(self):

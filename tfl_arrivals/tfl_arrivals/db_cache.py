@@ -1,9 +1,9 @@
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
-from tfl_arrivals import db_path, parser
+from tfl_arrivals import db_path
 from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival
-from tfl_arrivals.fetcher import lines_fetcher, line_stops_fetcher, stop_fetcher, line_data_fetcher, arrival_fetcher
+from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stop, fetch_line_data, fetch_arrivals
 from datetime import datetime, timedelta
 from typing import List, Callable
 
@@ -15,7 +15,7 @@ def __cache_lines(session: scoped_session, id: str) -> None:
     logger = logging.getLogger(__name__)
     for mode in modes:
         logger.info(f"Fetching mode {mode}")
-        for line in  parser.parse_lines(lines_fetcher(mode)):
+        for line in fetch_lines(mode):
             logger.debug(f"Adding line {line.name} to database")
             session.add(line)
 
@@ -31,7 +31,7 @@ def __delete_lines(session: scoped_session, id: str) -> None:
 def __cache_line_data(session: scoped_session, line_id: str) -> None:
     """Fetches the data for a single line from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
-    line = parser.parse_line(line_data_fetcher(line_id))
+    line = fetch_line_data(line_id)
     logger.debug(f"Adding line {line.name} to database")
     session.add(line)
     session.commit()
@@ -49,7 +49,7 @@ def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
     line = get_line(session, line_id)
 
     logger.info(f"Fetching stops for line {line.line_id}")
-    for stop in parser.parse_line_stops(line_stops_fetcher(line_id)):
+    for stop in fetch_line_stops(line_id):
         db_stop = session.query(StopPoint).filter(StopPoint.naptan_id == stop.naptan_id).one_or_none()
         if db_stop is not None:
             stop = db_stop
@@ -70,7 +70,7 @@ def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
 def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
     """Fetches the data for a single stop point from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
-    stop = parser.parse_stop(stop_fetcher(naptan_id))
+    stop = fetch_stop(naptan_id)
     logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")   
     session.add(stop)
     session.commit()
@@ -85,7 +85,7 @@ def __delete_stop_point(session: scoped_session, id: str) -> None:
 def __cache_arrivals(session: scoped_session, naptan_id: str) -> None:
     """Fetches the arrivals for a single stop point from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
-    arrivals = parser.parse_arrivals(arrival_fetcher(naptan_id))
+    arrivals = fetch_arrivals(naptan_id)
     logger.debug(f"Adding arrivals for '{naptan_id}' to database")
     for arrival in arrivals:
         db_arrival = session.query(Arrival).filter(Arrival.arrival_id == arrival.arrival_id).one_or_none()
