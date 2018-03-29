@@ -41,7 +41,4 @@ def fetch_stop(naptan_id: StopId):
 def fetch_arrivals(naptan_id: StopId):
     return parser.parse_arrivals(_fetch_arrivals(naptan_id))
 
-class fetcher(object):
-    """description of class"""
-
 
