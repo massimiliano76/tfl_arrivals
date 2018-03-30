@@ -29,15 +29,10 @@ def setup_logger():
     return logger
 
 
-def init_db():    
-    db.create_all()
-
 if __name__ == '__main__':
     logger = setup_logger()
 
-    if len(sys.argv) == 2 and sys.argv[1] == "init":
-        init_db()
-        exit()
+    db.create_all()
 
     HOST = environ.get('SERVER_HOST', 'localhost')
     try:
