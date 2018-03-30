@@ -1,7 +1,11 @@
+import logging
 from typing import List, Dict
 from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, Line, StopPoint
 import json 
 from datetime import datetime
+
+module_logger = logging.getLogger(__name__)
+
 
 def parse_arrivals(raw_json: str) -> List[Arrival]:
     arrivals = []
@@ -39,6 +43,21 @@ def _parse_stop(stop_json) -> StopPoint:
                 name = stop_json["commonName"],
                 indicator = stop_json["indicator"] if "indicator" in stop_json else "")
 
+
+monitoredTypes = ["NaptanPublicBusCoachTram", "NaptanMetroStation", "NaptanCoachBay"]
+
+def _parse_stops(stop_json) -> List[StopPoint]:
+    stops = []
+    if stop_json == None:
+        return stops
+
+    if stop_json["stopType"] in monitoredTypes:
+        stops.append(_parse_stop(stop_json))
+    
+    for child in stop_json["children"]:
+        stops += _parse_stops(child)
+    return stops
+
 def parse_line_stops(raw_json: str) -> List[StopPoint]:
     stops = []    
     for raw in json.loads(raw_json):    
@@ -46,5 +65,5 @@ def parse_line_stops(raw_json: str) -> List[StopPoint]:
         stops.append(stop)
     return stops
 
-def parse_stop(raw_json: str) -> StopPoint:
-    return _parse_stop(json.loads(raw_json))
+def parse_stops(raw_json: str) -> List[StopPoint]:
+    return _parse_stops(json.loads(raw_json))

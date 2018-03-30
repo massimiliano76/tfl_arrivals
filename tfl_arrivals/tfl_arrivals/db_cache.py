@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from tfl_arrivals import db_path
 from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival
-from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stop, fetch_line_data, fetch_arrivals
+from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stops, fetch_line_data, fetch_arrivals
 from datetime import datetime, timedelta
 from typing import List, Callable
 
@@ -70,9 +70,11 @@ def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
 def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
     """Fetches the data for a single stop point from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
-    stop = fetch_stop(naptan_id)
-    logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")   
-    session.add(stop)
+    stops = fetch_stops(naptan_id)
+    for stop in stops:
+        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
+        __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
+        session.add(stop)
     session.commit()
 
 def __delete_stop_point(session: scoped_session, id: str) -> None:
