@@ -26,6 +26,12 @@ class CacheTimestamp(db.Model):
     data_id = db.Column(db.String(30), nullable = True)
     update_time = db.Column(db.DateTime, default=datetime.utcnow)
 
+class ArrivalRequest(db.Model):
+    __tablename__ = "arrival_request"
+    id = db.Column(db.Integer, primary_key = True)
+    naptan_id = db.Column(db.String(15))
+    request_time = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 line_stops = db.Table("line_stops", db.metadata,
                    db.Column("line_id", db.String(30), db.ForeignKey("line.line_id")),

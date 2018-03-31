@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from tfl_arrivals import db_path
-from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival
+from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stops, fetch_line_data, fetch_arrivals
 from datetime import datetime, timedelta
 from typing import List, Callable
@@ -88,7 +88,7 @@ def __cache_arrivals(session: scoped_session, naptan_id: str) -> None:
     """Fetches the arrivals for a single stop point from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
     arrivals = fetch_arrivals(naptan_id)
-    logger.debug(f"Adding arrivals for '{naptan_id}' to database")
+    logger.info(f"Adding arrivals for '{naptan_id}' to database")
     for arrival in arrivals:
         db_arrival = session.query(Arrival).filter(Arrival.arrival_id == arrival.arrival_id).one_or_none()
         if db_arrival is not None:
@@ -125,9 +125,12 @@ def __get_update_timestamp(session: scoped_session, type: CachedDataType, id: st
 
 def __save_update_timestamp(session: scoped_session, type: CachedDataType, id: str = "") -> None:
     """Stores the current time as the timestamp of the last update
-   for a given CachedDataType and id pair"""
-    ts = CacheTimestamp(data_type = type, data_id = id)
-    session.add(ts)
+    for a given CachedDataType and id pair"""
+    ts = session.query(CacheTimestamp).filter(CacheTimestamp.data_type == type).filter(CacheTimestamp.data_id == id).one_or_none()
+    if ts == None:
+        session.add(CacheTimestamp(data_type = type, data_id = id))
+    else:
+        ts.update_time = datetime.utcnow();
     session.commit()
 
 _DBUpdateFunc = Callable[[scoped_session, str], None]
@@ -148,10 +151,10 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
     the current data, and stores it in the databse"""
     logger = logging.getLogger(__name__)
     #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    line_updated = __get_update_timestamp(session, desc.type, desc.id)
-    logger.debug(f"Cache for type {desc.type} last updated: {line_updated}")
+    last_updated = __get_update_timestamp(session, desc.type, desc.id)
+    logger.debug(f"Cache for type {desc.type} last updated: {last_updated}")
 
-    if line_updated == None or (datetime.utcnow() - line_updated) > desc.valid_for:
+    if last_updated == None or (datetime.utcnow() - last_updated) > desc.valid_for:
         logger.info(f"Refreshing {desc.type} data, id = '{desc.id}'")
         desc.delete_func(session, desc.id)
         desc.update_func(session, desc.id)
@@ -191,14 +194,41 @@ def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
     __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.naptan_id == naptan_id).one()
 
-def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
+def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
     ud = __UpdateDescription(CachedDataType.arrival, naptan_id, timedelta(minutes=1), 
                              __cache_arrivals, __delete_arrivals)
     __update_cache(session, ud)
+    session.commit()
+
+
+
+def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
+    __refresh_arrivals(session, naptan_id)    
     
+    req = session.query(ArrivalRequest).filter(ArrivalRequest.naptan_id == naptan_id).one_or_none()
+    if req == None:
+        session.add(ArrivalRequest(naptan_id=naptan_id))
+    else:
+        req.request_time = datetime.utcnow()
+    session.commit()
+
     return session.query(Arrival).\
         filter(Arrival.naptan_id == naptan_id).\
         filter(Arrival.ttl > datetime.utcnow()).\
         order_by(Arrival.expected).\
         limit(6).all()
+
+def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]:    
+    logger = logging.getLogger(__name__)
+    tracking_time_limit = timedelta(minutes=15)
+    session.query(ArrivalRequest).\
+        filter(ArrivalRequest.request_time < (datetime.utcnow() - tracking_time_limit)).\
+        delete()
+    session.commit()
+    recent_queries = session.query(ArrivalRequest).order_by(ArrivalRequest.naptan_id).all()    
+    if len(recent_queries) == 0:
+        logger.info(f"No arrivals were requested in the last {tracking_time_limit.seconds/60} minutes")
+    for q in recent_queries:
+        __refresh_arrivals(session, StopId(q.naptan_id))
+
 
