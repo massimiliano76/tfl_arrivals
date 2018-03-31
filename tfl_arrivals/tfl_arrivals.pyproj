@@ -84,6 +84,7 @@
     <Content Include="tfl_arrivals\static\scripts\arrivals.js" />
     <Content Include="tfl_arrivals\static\scripts\bootstrap.js" />
     <Content Include="tfl_arrivals\static\scripts\bootstrap.min.js" />
+    <Content Include="tfl_arrivals\static\scripts\common.js" />
     <Content Include="tfl_arrivals\static\scripts\cookies.js" />
     <Content Include="tfl_arrivals\static\scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="tfl_arrivals\static\scripts\jquery-1.10.2.js" />

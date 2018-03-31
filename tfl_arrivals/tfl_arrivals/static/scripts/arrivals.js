@@ -82,9 +82,8 @@ function removeMonitoredStationDiv(naptan_id) {
 
 
 function fillStopData(naptanId) {
-    var host = "http://" + window.location.hostname;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', host + "/api/stop/" + naptanId, true);
+    xhr.open('GET', api_host() + "/api/stop/" + naptanId, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             stop_data = JSON.parse(xhr.responseText);
@@ -97,10 +96,9 @@ function fillStopData(naptanId) {
     xhr.send();
 }
 
-function fillArrivals(naptanId) {
-    var host = "http://" + window.location.hostname;
+function fillArrivals(naptanId) {    
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', host + "/api/arrivals/" + naptanId, true);
+    xhr.open('GET', api_host() + "/api/arrivals/" + naptanId, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             stop_arrival_data = JSON.parse(xhr.responseText);

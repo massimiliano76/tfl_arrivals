@@ -65,10 +65,9 @@ function updateAddButtonEnabledState() {
 
 
 
-function loadStops(line_id) {
-    var host = "http://" + window.location.hostname;
+function loadStops(line_id) {    
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', host + "/api/stops/" + line_id, true);
+    xhr.open('GET', api_host() + "/api/stops/" + line_id, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             stops = JSON.parse(xhr.responseText);
