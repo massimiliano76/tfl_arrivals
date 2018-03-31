@@ -14,22 +14,6 @@ function setHighlightedLine(list, naptan_id) {
     updateAddButtonEnabledState();
 }
 
-
-function showAddResultMessage(text, success) {
-    row = document.createElement("div");
-    row.classList = "row position-absolute justify-content-center slide-in-out";
-
-    alert = document.createElement("div");
-    alert.classList = "col-6 align-middle alert"
-    alert.classList.add(success ? "alert-success" : "alert-danger");
-    
-    alert.innerHTML = text;
-    row.appendChild(alert);
-
-    document.body.insertBefore(row, document.body.firstChild);
-    setTimeout("alert.remove();", 4000);
-}
-
 function addStop() {
     let id = selectedStop().getAttribute("data-naptan-id")
     addMonitoredStop(id);
