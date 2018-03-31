@@ -68,6 +68,7 @@ def api_arrivals(naptan_id):
                      "name": stop.name,
                      "indicator": stop.indicator,
                      "arrivals": [{"towards" : arr.towards, 
+                                   "destination_name": arr.destination_name,
                                    "expected" : str(arr.expected),
                                    "lineId": arr.line.name} for arr in arrivals]
                      }

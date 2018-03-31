@@ -70,6 +70,7 @@ class Arrival(db.Model):
     vehicle_id = db.Column(db.String(10), nullable = False)
     naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))    
     towards = db.Column(db.String(40), nullable = False)
+    destination_name = db.Column(db.String(40), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
     ttl = db.Column(db.DateTime, nullable = False)
     stop = db.relationship(MonitoredStop)
@@ -78,7 +79,8 @@ class Arrival(db.Model):
     def __repr__(self):
         return f"Arrival(arrival_id={self.arrival_id}, line_id='{self.line_id}', " +\
                f"vehicle_id='{self.vehicle_id}', naptan_id='{self.naptan_id}', " +\
-               f"towards='{self.towards}', expected='{self.expected}', ttl='{self.ttl}')"
+               f"towards='{self.towards}', destination_name='{self.destination_name}', " +\
+               f"expected='{self.expected}', ttl='{self.ttl}')"
     
     def expected_in_minutes(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
         delta = self.expected - now()
@@ -96,11 +98,12 @@ class Arrival(db.Model):
         assert(self.vehicle_id == other.vehicle_id)
         assert(self.naptan_id == other.naptan_id)
         self.towards = other.towards
+        self.destination_name = other.destination_name
         self.expected = other.expected
         self.ttl = other.ttl
 
     def as_tuple(self):
-        return (self.arrival_id, self.line_id, self.vehicle_id, self.naptan_id, self.towards, self.expected, self.ttl)
+        return (self.arrival_id, self.line_id, self.vehicle_id, self.naptan_id, self.towards, self.destination_name, self.expected, self.ttl)
 
     def __eq__(self, other) -> bool:
         if type(self) != type(other):
@@ -109,7 +112,3 @@ class Arrival(db.Model):
 
     def __ne__(self, other) -> bool:
         return not self == other
-
-def arrival_display_line(arrival: Arrival, now: Callable[[], datetime]=datetime.utcnow):
-    return f"{arrival.towards[:30]:30} {arrival.expected_in_minutes(now):2}"
-

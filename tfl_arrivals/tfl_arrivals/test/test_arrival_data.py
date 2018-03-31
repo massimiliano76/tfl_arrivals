@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timedelta
-from tfl_arrivals.arrival_data import Arrival, arrival_display_line
+from tfl_arrivals.arrival_data import Arrival
 
 def test_construction():
     now = datetime.utcnow()
@@ -12,26 +12,6 @@ def test_construction():
     assert arr.towards == "Acton Town"
     assert arr.expected == expected
     assert arr.ttl == ttl
-
-def test_to_string():
-    arrive_at = datetime(2017, 4, 12, 17, 23, 29)
-    t_minus_one = datetime(2017, 4, 12, 17, 23, 25, 0)
-    ttl = datetime(2017, 4, 12, 17, 23, 40, 0)
-    dummy_now = lambda : t_minus_one
-    arr = Arrival(vehicle_id=234, naptan_id="940GZZLUKNB", towards="Uxbridge", expected = arrive_at, ttl = ttl)
-    assert arrival_display_line(arr, dummy_now) == "Uxbridge                        1"
-
-    arrive_at = datetime(2017, 4, 12, 17, 24, 25)
-    ttl = datetime(2017, 4, 12, 17, 10, 40, 0)
-    dummy_now = lambda : datetime(2017, 4, 12, 17, 10, 11)
-    arr = Arrival(vehicle_id=234, naptan_id="940GZZLUKNB", towards="Elephand and Castle", expected = arrive_at, ttl = ttl)
-    assert arrival_display_line(arr, dummy_now) == "Elephand and Castle            15"
-
-    arrive_at = datetime(2017, 4, 12, 17, 24, 25)
-    ttl = datetime(2017, 4, 12, 17, 10, 40, 0)
-    dummy_now = lambda : datetime(2017, 4, 12, 17, 10, 11)
-    arr = Arrival(vehicle_id=234, naptan_id="940GZZLUKNB", towards="Very-very long stop names should be cropped", expected = arrive_at, ttl = ttl)
-    assert arrival_display_line(arr, dummy_now) == "Very-very long stop names shou 15"
 
 def test_expected_in_seconds_mocked():
     dummy_now = lambda : datetime(2017, 4, 12, 17, 10, 11)

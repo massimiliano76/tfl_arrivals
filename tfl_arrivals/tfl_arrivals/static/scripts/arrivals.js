@@ -57,9 +57,10 @@ function createArrivalList(arrivals, id) {
     else {
         arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
         for (arr of arrivals) {
+            dest = (arr.towards === "null") ? "Terminating here" : arr.destination_name;
             arrivals_list += `<tr>
                 <td class="arrival-data arrival-line">${arr.lineId}</td>
-                <td class="arrival-data arrival-towards">${arr.towards}</td>
+                <td class="arrival-data arrival-towards">${dest}</td>
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`
         }

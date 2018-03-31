@@ -11,14 +11,18 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
     arrivals = []
     for raw in json.loads(raw_json):
         parse_string = "%Y-%m-%dT%H:%M:%SZ" 
-        
+        if "destinationName" in raw:
+            dest = raw["destinationName"]
+        else:
+            raw["towards"]
         arrival = Arrival(arrival_id = int(raw["id"]),
                           line_id = raw["lineId"],
                           vehicle_id = VehicleId(raw["vehicleId"]),
                           naptan_id = StopId(raw["naptanId"]),
                           expected = datetime.strptime(raw["expectedArrival"], parse_string),
                           ttl = datetime.strptime(raw["timeToLive"],  parse_string),
-                          towards = raw["towards"]
+                          towards = raw["towards"],
+                          destination_name = dest
                           )
         arrivals.append(arrival)
     return arrivals
