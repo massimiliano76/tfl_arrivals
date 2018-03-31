@@ -99,7 +99,6 @@
     <Content Include="tfl_arrivals\static\scripts\respond.js" />
     <Content Include="tfl_arrivals\static\scripts\respond.min.js" />
     <Content Include="tfl_arrivals\static\scripts\_references.js" />
-    <Content Include="tfl_arrivals\templates\about.html" />
     <Content Include="tfl_arrivals\templates\arrival_boards.html" />
     <Content Include="tfl_arrivals\templates\contact.html" />
     <Content Include="tfl_arrivals\templates\index.html" />

@@ -17,13 +17,11 @@ def start_collector():
     collector = arrivals_collector.arrivals_collector(fetch_arrivals)
     collector.start_collecting()
 
-
+    
 @app.route('/')
-@app.route('/home')
-def home():
-    """Renders the home page."""
-    return redirect(url_for("arrivals"))
-
+def arrivals():    
+    lines = db_cache.get_all_lines(db.session)
+    return render_template("arrival_boards.html", title="London Arrivals", lines=lines)    
 
 @app.route('/contact')
 def contact():
@@ -33,24 +31,6 @@ def contact():
         title='Contact',
         year=datetime.utcnow().year,
         message='Your contact page.'
-    )
-
-
-@app.route('/arrivals')
-def arrivals():    
-    lines = db_cache.get_all_lines(db.session)
-    return render_template("arrival_boards.html", title="London Arrivals", lines=lines)    
-
-@app.route('/add_stop')
-def add_stop():
-    """Renders the Add stop page."""
-    lines = db_cache.get_all_lines(db.session)
-    return render_template(
-        'add_stop.html',
-        title='Add Stop',
-        year=datetime.utcnow().year,
-        message='Your contact page.',
-        lines=lines
     )
 
 @app.route('/api/stops/<string:line_id>')
@@ -81,25 +61,3 @@ def api_stop_data(naptan_id):
     stop = db_cache.get_stop_point(db.session, naptan_id)
     return Response(stop.json(), status=200, mimetype='application/json')
 
-
-#@app.route('/arrivals')
-#def home():
-#    """Renders the next three arrivals at all monitored stations"""
-#    db = arrival_db('arrivals.db')
-#    #db.get_arrivals()
-#    return render_template(
-#        'arrival_boards.html',
-#        title='Arrivals',
-#        year=datetime.utcnow().year,
-#    )
-
-
-#@app.route('/about')
-#def about():
-#    """Renders the about page."""
-#    return render_template(
-#        'contact.html',
-#        title='About',
-#        year=datetime.utcnow().year,
-#        message='Your application description page.'
-#    )
