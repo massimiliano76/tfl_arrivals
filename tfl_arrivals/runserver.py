@@ -4,8 +4,7 @@ This script runs the tfl_arrivals application using a development server.
 
 import logging
 from os import environ
-from tfl_arrivals import app, arrivals_collector, db
-from tfl_arrivals.fetcher import fetch_arrivals
+from tfl_arrivals import db, app
 from os import path
 import time
 import sys
@@ -39,11 +38,7 @@ if __name__ == '__main__':
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    
-    logger.info("Start live data collection")
-    collector = arrivals_collector.arrivals_collector(fetch_arrivals)
-    #collector.start_collecting()
-    
+ 
     app.config.update(dict(
         DEBUG=True
         ))

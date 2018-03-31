@@ -4,11 +4,19 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
-from tfl_arrivals import app, db_cache
-from tfl_arrivals.arrival_data import Arrival, MonitoredStop, StopPoint, Line, db
+from tfl_arrivals import app, db_cache, arrivals_collector
+from tfl_arrivals.arrival_data import Arrival, StopPoint, Line, db
+from tfl_arrivals.fetcher import fetch_arrivals
 import json
 from os import path
 import logging
+
+
+@app.before_first_request
+def start_collector():        
+    collector = arrivals_collector.arrivals_collector(fetch_arrivals)
+    collector.start_collecting()
+
 
 @app.route('/')
 @app.route('/home')
