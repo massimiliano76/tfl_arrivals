@@ -8,7 +8,12 @@ function expectedInMinutes(ts) {
     let now = new Date();    
     let utc_now = (now.getTime() + now.getTimezoneOffset() * 60 * 1000);
     var expected_in_ms = new Date(year, month - 1, day, hours, minutes, seconds).getTime() - utc_now;
-    return Math.ceil(expected_in_ms / (60 * 1000));
+    if (expected_in_ms <= 15) {
+        return "due";
+    }
+    else {
+        return Math.ceil(expected_in_ms / (60 * 1000));
+    }
 }
 
 function createArrivalDiv(naptanId) {
@@ -115,7 +120,7 @@ function fillArrivals(naptanId) {
     xhr.send();
 }
 
-function refreshArrivalDivs() {
+function refreshArrivalDivs(repeat = true) {
     ms = getMonitoredStopsFromCookie();
     for (stop of ms) {
         div = document.getElementById(stop + "_arrivals");
@@ -131,7 +136,11 @@ function refreshArrivalDivs() {
     for (stop of ms) {
         fillArrivals(stop);
     }
+
+    if (repeat) {
+        setTimeout(refreshArrivalDivs, 15000)
+    }
 };
 
 
-window.onload = refreshArrivalDivs;
+window.onload = refreshArrivalDivs

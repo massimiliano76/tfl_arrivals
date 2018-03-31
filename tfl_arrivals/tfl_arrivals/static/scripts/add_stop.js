@@ -17,7 +17,7 @@ function setHighlightedLine(list, naptan_id) {
 function addStop() {
     let id = selectedStop().getAttribute("data-naptan-id")
     addMonitoredStop(id);
-    refreshArrivalDivs();
+    refreshArrivalDivs(false);
 }
 
 function clearStops() {
