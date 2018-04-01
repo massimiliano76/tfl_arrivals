@@ -129,35 +129,3 @@ div.card-content-bottom {
 .full-width {
     width: 100%;
 }
-
-
-.slide-in-out {    
-    top: 0px;
-    width: 100%;
-    animation: animateinout 4s;
-    text-align: center;
-    z-index: 100;
-}
-
-@keyframes animateinout {
-    0% {
-        top: -200px;
-        opacity: 0
-    }
-
-    25% {
-        top: 50px;
-        opacity: 1
-    }
-
-    75% {
-        top: 50px;
-        opacity: 1
-    }
-
-    100% {
-        top: -200px;
-        opacity: 0
-    }
-
-}
