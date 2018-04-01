@@ -25,7 +25,7 @@ div.card-content {
 
 
 div.card-content-top {
-    height: 30%;
+    height: 35%;
     align-content: center;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -35,7 +35,9 @@ div.card-content-top {
 }
 
 div.card-content-bottom {
-    height: 70%;
+    height: 65%;
+    align-content: center;
+    text-align: center;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     padding-left: 15px;
@@ -74,6 +76,24 @@ div.card-content-bottom {
 .arrival-expected {
     width: 5%;
     text-align: right;
+}
+
+
+
+.indicator {
+    background-color: #ce2020;
+    display: inline-block;
+    align-self: center;
+    width: 48px;
+    height: 48px;
+    line-height: 42px;
+    text-align: center;
+    color: white;
+    position: relative;
+    top: -40px;
+    margin-bottom: -40px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0, 0.42), 0 2px 4px rgba(0,0,0, 0.64);
 }
 
 /****************/

@@ -25,22 +25,15 @@ function createArrivalDiv(naptanId) {
             <div class="row align-items-center card-content-top-inner">
                 <div class="col text-center arrival-station">
                     <div class="h3" id="${id_stem}_name">
-                    </div>
-                    <div class="h4" id="${id_stem}_indicator">
-                    </div>
+                    </div>                   
                 </div>
-                <div class="col h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>X</a></div>
-            </div>            
+                <div class="col col-1 h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>X</a></div>
+            </div>  
         </div>
-        <div class="card-content-bottom">
+        <div class="card-content-bottom align-items-center">
+            <div class="h4 align-items-center indicator invisible" id="${id_stem}_indicator">
+            </div >
             <table class="arrival-table" id="${id_stem}_table">
-                <thead class="arrival-table arrival-table-head">
-                    <tr>
-                        <th class="arrival-header arrival-line">Line</th>
-                        <th class="arrival-header arrival-towards">Towards</th>
-                        <th class="arrival-header arrival-expected"></th>
-                    </tr>
-                </thead>
                 <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
                 </tbody>
             </table>
@@ -95,7 +88,12 @@ function fillStopData(naptanId) {
             stop_data = JSON.parse(xhr.responseText);
             if (document.getElementById(naptanId + "_arrivals") != null) {
                 document.getElementById(naptanId + "_arrivals_name").innerHTML = getDisplayName(stop_data["name"]);
-                document.getElementById(naptanId + "_arrivals_indicator").innerHTML = stop_data["indicator"];
+                indicatorDiv = document.getElementById(naptanId + "_arrivals_indicator");
+                indicatorText = stop_data["indicator"].replace("Stop", "");
+                if (indicatorText != "") {
+                    indicatorDiv.classList.remove("invisible");
+                    indicatorDiv.innerHTML = indicatorText;
+                }
             }
         }
     }
