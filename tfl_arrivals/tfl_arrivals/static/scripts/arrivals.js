@@ -27,7 +27,7 @@ function createArrivalDiv(naptanId) {
                     <div class="h3" id="${id_stem}_name">
                     </div>                   
                 </div>
-                <div class="col col-1 h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>X</a></div>
+                <div class="col col-1 h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>&times;</a></div>
             </div>  
         </div>
         <div class="card-content-bottom align-items-center">
@@ -85,6 +85,9 @@ function fillStopData(naptanId) {
     xhr.open('GET', api_host() + "/api/stop/" + naptanId, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
+            if (xhr.responseText == "")
+                return;
+
             stop_data = JSON.parse(xhr.responseText);
             if (document.getElementById(naptanId + "_arrivals") != null) {
                 document.getElementById(naptanId + "_arrivals_name").innerHTML = getDisplayName(stop_data["name"]);
@@ -105,6 +108,9 @@ function fillArrivals(naptanId) {
     xhr.open('GET', api_host() + "/api/arrivals/" + naptanId, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
+            if (xhr.responseText == "")
+                return;
+
             stop_arrival_data = JSON.parse(xhr.responseText);
             if (stop_arrival_data != null) {
                 id = naptanId + "_arrivals_list";
