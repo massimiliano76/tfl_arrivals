@@ -106,7 +106,7 @@ div.card-content-bottom {
 #add_stop_form {
     position: relative;
     overflow: hidden;
-    height: 75vh;
+    height: 80vh;
 }
 
 #line_select_page {
@@ -116,7 +116,7 @@ div.card-content-bottom {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
-    height: 70vh;
+    height: 65vh;
 }
 
 #stop_select_page {
@@ -126,7 +126,7 @@ div.card-content-bottom {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
-    height: 70vh;
+    height: 65vh;
 }
 
 

@@ -6,6 +6,7 @@ function showAddStopPanel() {
     stop_select_page.classList.remove("stop-list-in");
     stop_select_page.classList.remove("stop-list-out");
     stop_select_page.style.display = "none";
+    back_button.style.display = "none";
     clearStops();
     clearHighlightedLine(line_list);
 }
@@ -72,7 +73,7 @@ function loadStops(line_id) {
 
             for (let stop of stops) {
                 var li = document.createElement("li");
-                var name = stop.name;
+                var name = stop.name.replace(" Underground Station", "");
                 if (stop.indicator != "") {
                     name += " (" + stop.indicator + ")";
                 }
@@ -101,6 +102,7 @@ function selectLine(line) {
         line_select_page.classList.remove("line-list-out");
         stop_select_page.classList.remove("stop-list-in");
     }, 700);
+    back_button.style.display = "block";
 } 
 
 
@@ -115,7 +117,8 @@ function backToStopList() {
         stop_select_page.style.display = "none";
         clearStops();
     }, 700);
-    
+
+    back_button.style.display = "none";
     clearHighlightedLine(line_list);
 }
 
