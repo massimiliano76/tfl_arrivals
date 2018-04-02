@@ -21,16 +21,19 @@ def start_collector():
 @app.route('/')
 def arrivals():    
     lines = db_cache.get_all_lines(db.session)
-    return render_template("arrival_boards.html", title="London Arrivals", lines=lines)    
-
-@app.route('/contact')
-def contact():
-    """Renders the contact page."""
     return render_template(
-        'contact.html',
-        title='Contact',
+        "arrival_boards.html", 
+        title="London Arrivals", 
         year=datetime.utcnow().year,
-        message='Your contact page.'
+        lines=lines)    
+
+@app.route('/about')
+def about():
+    """Renders the About page."""
+    return render_template(
+        'about.html',
+        title='About London Arrivals',
+        year=datetime.utcnow().year
     )
 
 @app.route('/api/stops/<string:line_id>')
