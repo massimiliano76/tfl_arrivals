@@ -100,16 +100,42 @@ div.card-content-bottom {
 /* Add new stop */
 /****************/
 
-.container-add-stop {
-    height: 50%;
+#stop_add_panel {
 }
+
+#add_stop_form {
+    position: relative;
+    overflow: hidden;
+    height: 75vh;
+}
+
+#line_select_page {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 70vh;
+}
+
+#stop_select_page {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 70vh;
+}
+
 
 .line-selector {
 }
 
-.line-list-container {
-    height: 100%;
-}
+/*.line-list-container, .stop-list-container {
+    height: 70%;
+}*/
 
 .line-list, .stop-list {
     border: 1px solid #999999;
@@ -129,3 +155,58 @@ div.card-content-bottom {
 .full-width {
     width: 100%;
 }
+
+.slide_animation_base,
+.line-list-out,
+.line-list-in,
+.stop-list-out,
+.stop-list-in {    
+    animation-duration: 0.7s;
+    animation-timing-function: ease-in-out;
+}
+
+
+
+.line-list-out {
+    /*position: relative;*/
+    animation-name: line-list-out;
+}
+
+
+.line-list-in {
+    /*position: relative;*/
+    animation-name: line-list-out;
+    animation-direction: reverse;
+}
+
+@keyframes line-list-out {
+    from {
+        left: 0%;
+    }
+
+    to {
+        left: -100%;
+    }
+}
+
+.stop-list-in {
+    /*position: relative;*/
+    animation-name: stop-list-in;
+}
+
+.stop-list-out {
+    /*position: relative;*/
+    animation-name: stop-list-in;
+    animation-direction: reverse;
+}
+
+@keyframes stop-list-in {
+    from {
+        left: 100%;
+    }
+
+    to {
+        left: 0%;
+    }
+}
+

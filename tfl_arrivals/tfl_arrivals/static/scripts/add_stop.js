@@ -1,4 +1,17 @@
 
+function showAddStopPanel() {
+    line_select_page.classList.remove("line-list-out");
+    line_select_page.classList.remove("line-list-in");
+    line_select_page.style.display = "block";
+    stop_select_page.classList.remove("stop-list-in");
+    stop_select_page.classList.remove("stop-list-out");
+    stop_select_page.style.display = "none";
+    clearStops();
+    clearHighlightedLine(line_list);
+}
+
+
+
 function clearHighlightedLine(list) {
     for (line of list.getElementsByTagName("li")) {
         line.classList.remove("active");
@@ -75,11 +88,37 @@ function loadStops(line_id) {
 }
 
 
-
 function selectLine(line) {    
     loadStops(line.getAttribute("data-naptan-id"));
     setHighlightedLine(line_list, line.getAttribute("data-naptan-id"));
+
+    line_select_page.classList.add("line-list-out");
+    stop_select_page.classList.add("stop-list-in");
+    stop_select_page.style.display = "block";
+
+    setTimeout(function () {
+        line_select_page.style.display = "none";
+        line_select_page.classList.remove("line-list-out");
+        stop_select_page.classList.remove("stop-list-in");
+    }, 700);
+} 
+
+
+function backToStopList() {
+    line_select_page.classList.add("line-list-in");
+    stop_select_page.classList.add("stop-list-out");
+    line_select_page.style.display = "block";
+
+    setTimeout(function () {
+        line_select_page.classList.remove("line-list-in");
+        stop_select_page.classList.remove("stop-list-out");
+        stop_select_page.style.display = "none";
+        clearStops();
+    }, 700);
+    
+    clearHighlightedLine(line_list);
 }
+
 
 
 function filterItems(pattern, list) {
