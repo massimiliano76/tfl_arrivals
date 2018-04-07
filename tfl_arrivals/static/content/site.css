@@ -116,7 +116,7 @@ div.card-content-bottom {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
-    height: 65vh;
+    height: 100%;
 }
 
 #stop_select_page {
@@ -126,24 +126,37 @@ div.card-content-bottom {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
-    height: 65vh;
+    height: 100%;
 }
 
+.selector-content {
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.selector-content > h4 {
+  padding-top: 1.5rem;
+}
 
 .line-selector {
 }
 
-/*.line-list-container, .stop-list-container {
-    height: 70%;
-}*/
+.line-list-container, .stop-list-container {
+  height: 65vh;
+}
 
 .line-list, .stop-list {
     border: 1px solid #999999;
-    height: 100%;
+    height: inherit;
+    flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
+.line-list-item {
+}
 
 .stop-selector {
 }
