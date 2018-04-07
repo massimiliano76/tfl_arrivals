@@ -37,12 +37,12 @@ function addStop() {
 function clearStops() {
     while (stop_list.firstChild) {
         stop_list.removeChild(stop_list.firstChild);
-    } 
+    }
     clearHighlightedLine(stop_list);
     updateAddButtonEnabledState();
 }
 
-function selectStop(naptan_id) {    
+function selectStop(naptan_id) {
     setHighlightedLine(stop_list, naptan_id);
     updateAddButtonEnabledState();
 }
@@ -63,7 +63,7 @@ function updateAddButtonEnabledState() {
 
 
 
-function loadStops(line_id) {    
+function loadStops(line_id) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', api_host() + "/api/stops/" + line_id, true);
     xhr.onreadystatechange = function () {
@@ -89,7 +89,7 @@ function loadStops(line_id) {
 }
 
 
-function selectLine(line) {    
+function selectLine(line) {
     loadStops(line.getAttribute("data-naptan-id"));
     setHighlightedLine(line_list, line.getAttribute("data-naptan-id"));
 
@@ -103,7 +103,7 @@ function selectLine(line) {
         stop_select_page.classList.remove("stop-list-in");
     }, 700);
     back_button.style.display = "block";
-} 
+}
 
 
 function backToStopList() {
@@ -163,4 +163,3 @@ line_search.addEventListener('keyup', function () {
 stop_search.addEventListener('keyup', function () {
     filterItems(this.value, stop_list);
 });
-

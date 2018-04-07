@@ -16,14 +16,14 @@ const deleteCookie = (name, path) => {
 
 const getMonitoredStopsFromCookie = (name) => {
     s = getCookie("monitored_stops");
-    if (s.length == 0) 
+    if (s.length == 0)
         return []
 
     return s.split(",");
 }
 
 const deleteMonitoredStopFromCookie = (name) => {
-    let ms = getMonitoredStopsFromCookie(name)    
+    let ms = getMonitoredStopsFromCookie(name)
     const idx = ms.indexOf(name);
     if (idx > -1) {
         ms.splice(idx, 1);

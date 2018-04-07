@@ -9,7 +9,7 @@ from typing import List, Callable
 
 module_logger = logging.getLogger(__name__)
 
-### All lines 
+### All lines
 def __cache_lines(session: scoped_session, id: str) -> None:
     """Fetches the data for all lines from TFL and stores in the database"""
     logger = logging.getLogger(__name__)
@@ -54,15 +54,15 @@ def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
         if db_stop is not None:
             stop = db_stop
         stop.lines.append(line)
-        
+
         __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
-        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")   
+        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
     session.commit()
 
 def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
     """Deletes all stops data for a single line data from the database"""
     line = get_line(session, line_id)
-    line.stops = []    
+    line.stops = []
     session.commit()
 
 
@@ -106,7 +106,7 @@ def __delete_arrivals(session: scoped_session, id: str) -> None:
 ### Cache update timestamp helpers
 def __get_update_timestamp(session: scoped_session, type: CachedDataType, id: str = None) -> datetime:
     """Gets a timestamp of the last update for a given CachedDataType and id pair.
-    In the case of CachedDataType.line_list the id is not used"""    
+    In the case of CachedDataType.line_list the id is not used"""
     logger = logging.getLogger(__name__)
     update_record_query = session.query(CacheTimestamp).\
         filter(CacheTimestamp.data_type == type)
@@ -119,7 +119,7 @@ def __get_update_timestamp(session: scoped_session, type: CachedDataType, id: st
         one_or_none()
     if update_record == None:
         return None
-    
+
     return update_record.update_time
 
 
@@ -145,9 +145,9 @@ class __UpdateDescription:
         self.delete_func = delete_func
 
 def __update_cache(session: scoped_session, desc: __UpdateDescription):
-    """Using the information in the update description this function checks 
+    """Using the information in the update description this function checks
     when was the data stored in the database last updated.
-    If the stored data is too old, it removes it from the database fetches 
+    If the stored data is too old, it removes it from the database fetches
     the current data, and stores it in the databse"""
     logger = logging.getLogger(__name__)
     #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
@@ -162,40 +162,40 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
 
 
 
-### Public methods 
+### Public methods
 def get_all_lines(session: scoped_session) -> List[Line]:
     """Retrieves all lines, using the local database if possible"""
-    ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1), 
+    ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1),
                              __cache_lines, __delete_lines)
     __update_cache(session, ud)
     return session.query(Line).order_by(Line.mode_name.desc(),Line.name).all()
 
 def get_line(session: scoped_session, line_id: LineId) -> Line:
-    """Retrieves basic data of one line, using the local database if possible. 
-    If stop data is present in the database it is also returned, but 
-    this funtion doesn't fetch it if missing. 
+    """Retrieves basic data of one line, using the local database if possible.
+    If stop data is present in the database it is also returned, but
+    this funtion doesn't fetch it if missing.
     Use get_stops_of_lines if stop data is required"""
-    ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1), 
+    ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1),
                              __cache_line_data, __delete_line_data)
     __update_cache(session, ud)
     return session.query(Line).filter(Line.line_id == line_id).one()
 
 def get_stops_of_line(session: scoped_session, line_id: LineId) -> List[StopPoint]:
     """Retrieves all the stops of one lines, using the local database if possible"""
-    ud = __UpdateDescription(CachedDataType.line_stops, line_id, timedelta(days=1), 
+    ud = __UpdateDescription(CachedDataType.line_stops, line_id, timedelta(days=1),
                              __cache_line_stops, __delete_line_stops)
     __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
-   
+
 
 def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
-    ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1), 
+    ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1),
                              __cache_stop_point, __delete_stop_point)
     __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.naptan_id == naptan_id).one()
 
 def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
-    ud = __UpdateDescription(CachedDataType.arrival, naptan_id, timedelta(minutes=1), 
+    ud = __UpdateDescription(CachedDataType.arrival, naptan_id, timedelta(minutes=1),
                              __cache_arrivals, __delete_arrivals)
     __update_cache(session, ud)
     session.commit()
@@ -203,8 +203,8 @@ def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arriv
 
 
 def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
-    __refresh_arrivals(session, naptan_id)    
-    
+    __refresh_arrivals(session, naptan_id)
+
     req = session.query(ArrivalRequest).filter(ArrivalRequest.naptan_id == naptan_id).one_or_none()
     if req == None:
         session.add(ArrivalRequest(naptan_id=naptan_id))
@@ -218,17 +218,15 @@ def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
         order_by(Arrival.expected).\
         limit(6).all()
 
-def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]:    
+def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]:
     logger = logging.getLogger(__name__)
     tracking_time_limit = timedelta(minutes=15)
     session.query(ArrivalRequest).\
         filter(ArrivalRequest.request_time < (datetime.utcnow() - tracking_time_limit)).\
         delete()
     session.commit()
-    recent_queries = session.query(ArrivalRequest).order_by(ArrivalRequest.naptan_id).all()    
+    recent_queries = session.query(ArrivalRequest).order_by(ArrivalRequest.naptan_id).all()
     if len(recent_queries) == 0:
         logger.info(f"No arrivals were requested in the last {tracking_time_limit.seconds/60} minutes")
     for q in recent_queries:
         __refresh_arrivals(session, StopId(q.naptan_id))
-
-

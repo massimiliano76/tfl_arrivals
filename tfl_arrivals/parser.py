@@ -10,7 +10,7 @@ module_logger = logging.getLogger(__name__)
 def parse_arrivals(raw_json: str) -> List[Arrival]:
     arrivals = []
     for raw in json.loads(raw_json):
-        parse_string = "%Y-%m-%dT%H:%M:%SZ" 
+        parse_string = "%Y-%m-%dT%H:%M:%SZ"
         if "destinationName" in raw:
             dest = raw["destinationName"]
         else:
@@ -42,7 +42,7 @@ def parse_line(raw_json: str) -> Line:
                 name = raw["name"],
                 mode_name = raw["modeName"])
 
-def _parse_stop(stop_json) -> StopPoint:    
+def _parse_stop(stop_json) -> StopPoint:
     return StopPoint(naptan_id = stop_json["naptanId"],
                 name = stop_json["commonName"],
                 indicator = stop_json["indicator"] if "indicator" in stop_json else "")
@@ -57,14 +57,14 @@ def _parse_stops(stop_json) -> List[StopPoint]:
 
     if stop_json["stopType"] in monitoredTypes:
         stops.append(_parse_stop(stop_json))
-    
+
     for child in stop_json["children"]:
         stops += _parse_stops(child)
     return stops
 
 def parse_line_stops(raw_json: str) -> List[StopPoint]:
-    stops = []    
-    for raw in json.loads(raw_json):    
+    stops = []
+    for raw in json.loads(raw_json):
         stop = _parse_stop(raw)
         stops.append(stop)
     return stops

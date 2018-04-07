@@ -40,5 +40,3 @@ def fetch_stops(naptan_id: StopId) -> List[StopPoint]:
 
 def fetch_arrivals(naptan_id: StopId) -> List[Arrival]:
     return parser.parse_arrivals(_fetch_arrivals(naptan_id))
-
-

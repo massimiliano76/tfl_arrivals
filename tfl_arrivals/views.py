@@ -13,19 +13,19 @@ import logging
 
 
 @app.before_first_request
-def start_collector():        
+def start_collector():
     collector = arrivals_collector.arrivals_collector(fetch_arrivals)
     collector.start_collecting()
 
-    
+
 @app.route('/')
-def arrivals():    
+def arrivals():
     lines = db_cache.get_all_lines(db.session)
     return render_template(
         "arrival_boards.html",
         title="London Arrivals",
         year=datetime.utcnow().year,
-        lines=lines)    
+        lines=lines)
 
 @app.route('/about')
 def about():
@@ -41,7 +41,7 @@ def api_line_stops(line_id):
     stops = db_cache.get_stops_of_line(db.session, line_id)
     resp = Response("[" + ", ".join([stop.json() for stop in stops]) + "]", status=200, mimetype='application/json')
     return resp
-    
+
 
 @app.route('/api/arrivals/<string:naptan_id>')
 def api_arrivals(naptan_id):
@@ -50,7 +50,7 @@ def api_arrivals(naptan_id):
     response_data = {"naptanId": naptan_id,
                      "name": stop.name,
                      "indicator": stop.indicator,
-                     "arrivals": [{"towards" : arr.towards, 
+                     "arrivals": [{"towards" : arr.towards,
                                    "destination_name": arr.destination_name,
                                    "expected" : str(arr.expected),
                                    "lineId": arr.line.name} for arr in arrivals]
@@ -63,4 +63,3 @@ def api_arrivals(naptan_id):
 def api_stop_data(naptan_id):
     stop = db_cache.get_stop_point(db.session, naptan_id)
     return Response(stop.json(), status=200, mimetype='application/json')
-
