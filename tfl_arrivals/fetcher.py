@@ -1,7 +1,7 @@
 import requests
 import logging
 from tfl_arrivals import parser
-from tfl_arrivals.arrival_data import Line, LineId, StopId, StopPoint, Arrival
+from tfl_arrivals.models import Line, LineId, StopId, StopPoint, Arrival
 from typing import List
 
 def _fetch(url) -> str:

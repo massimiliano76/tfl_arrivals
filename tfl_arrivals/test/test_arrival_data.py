@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timedelta
-from tfl_arrivals.arrival_data import Arrival
+from tfl_arrivals.models import Arrival
 
 def test_construction():
     now = datetime.utcnow()

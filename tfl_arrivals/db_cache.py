@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from tfl_arrivals import db_path
-from tfl_arrivals.arrival_data import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
+from tfl_arrivals.models import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stops, fetch_line_data, fetch_arrivals
 from datetime import datetime, timedelta
 from typing import List, Callable

@@ -1,6 +1,6 @@
 import pytest
 from tfl_arrivals.parser import parse_arrivals
-from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, LineId
+from tfl_arrivals.models import Arrival, StopId, VehicleId, LineId
 from datetime import datetime
 
 

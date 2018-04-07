@@ -1,6 +1,6 @@
 from typing import Callable, List
 from tfl_arrivals import db_path, db_cache
-from tfl_arrivals.arrival_data import Arrival, MonitoredStop
+from tfl_arrivals.models import Arrival, MonitoredStop
 import time
 from threading import Thread
 from datetime import datetime, timedelta

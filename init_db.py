@@ -1,5 +1,4 @@
 from tfl_arrivals import db
-from tfl_arrivals.arrival_data import *
+from tfl_arrivals.models import *
 
 db.create_all()
-db.session.commit()

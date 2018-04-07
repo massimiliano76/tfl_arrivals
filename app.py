@@ -7,7 +7,7 @@ from tfl_arrivals import app
 from os import path
 import time
 import sys
-from tfl_arrivals.arrival_data import *
+from tfl_arrivals.models import *
 
 if __name__ == '__main__':
     HOST = environ.get('SERVER_HOST', 'localhost')

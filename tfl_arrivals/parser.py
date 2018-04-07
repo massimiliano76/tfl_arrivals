@@ -1,7 +1,7 @@
 import logging
 from typing import List, Dict
-from tfl_arrivals.arrival_data import Arrival, StopId, VehicleId, Line, StopPoint
-import json 
+from tfl_arrivals.models import Arrival, StopId, VehicleId, Line, StopPoint
+import json
 from datetime import datetime
 
 module_logger = logging.getLogger(__name__)
