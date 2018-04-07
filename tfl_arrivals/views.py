@@ -4,8 +4,8 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
-from tfl_arrivals import app, db_cache, arrivals_collector
-from tfl_arrivals.arrival_data import Arrival, StopPoint, Line, db
+from tfl_arrivals import app, db_cache, arrivals_collector, db
+from tfl_arrivals.arrival_data import Arrival, StopPoint, Line, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_arrivals
 import json
 from os import path
@@ -22,8 +22,8 @@ def start_collector():
 def arrivals():    
     lines = db_cache.get_all_lines(db.session)
     return render_template(
-        "arrival_boards.html", 
-        title="London Arrivals", 
+        "arrival_boards.html",
+        title="London Arrivals",
         year=datetime.utcnow().year,
         lines=lines)    
 
