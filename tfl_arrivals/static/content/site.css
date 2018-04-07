@@ -10,7 +10,7 @@ body {
     padding-right: 15px;
 }
 
-div.arrival-card {    
+div.arrival-card {
     height: 40%;
     padding-right: 10px;
     padding-left: 10px;
@@ -20,7 +20,7 @@ div.card-content {
     height: 90%;
     border-radius: 15px;
     background-color: #395a71;
-    color: white;       
+    color: white;
 }
 
 
@@ -66,7 +66,7 @@ div.card-content-bottom {
 
 .arrival-header {
     align-content: center;
-    
+
 }
 
 .arrival-line {
@@ -160,7 +160,7 @@ div.card-content-bottom {
 .line-list-out,
 .line-list-in,
 .stop-list-out,
-.stop-list-in {    
+.stop-list-in {
     animation-duration: 0.7s;
     animation-timing-function: ease-in-out;
 }
@@ -209,4 +209,3 @@ div.card-content-bottom {
         left: 0%;
     }
 }
-

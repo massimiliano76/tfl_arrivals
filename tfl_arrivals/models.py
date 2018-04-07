@@ -55,7 +55,7 @@ class StopPoint(db.Model):
 
     def json(self) -> str:
         return f'{{"naptan_id": "{self.naptan_id}", "indicator": "{self.indicator}", "name": "{self.name}"}}'
-    
+
 class MonitoredStop(db.Model):
     __tablename__ = "monitored_stop"
 
@@ -68,7 +68,7 @@ class Arrival(db.Model):
     arrival_id = db.Column(db.Integer, primary_key = True)
     line_id = db.Column(db.String, db.ForeignKey("line.line_id"))
     vehicle_id = db.Column(db.String(10), nullable = False)
-    naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))    
+    naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))
     towards = db.Column(db.String(40), nullable = False)
     destination_name = db.Column(db.String(40), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
@@ -81,7 +81,7 @@ class Arrival(db.Model):
                f"vehicle_id='{self.vehicle_id}', naptan_id='{self.naptan_id}', " +\
                f"towards='{self.towards}', destination_name='{self.destination_name}', " +\
                f"expected='{self.expected}', ttl='{self.ttl}')"
-    
+
     def expected_in_minutes(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
         delta = self.expected - now()
         return ceil(delta.seconds/60)

@@ -5,7 +5,7 @@ function expectedInMinutes(ts) {
     let dateString = "2010-08-09 01:02:03"
     let regex = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/
     let [, year, month, day, hours, minutes, seconds] = regex.exec(ts)
-    let now = new Date();    
+    let now = new Date();
     let utc_now = (now.getTime() + now.getTimezoneOffset() * 60 * 1000);
     var expected_in_ms = new Date(year, month - 1, day, hours, minutes, seconds).getTime() - utc_now;
     if (expected_in_ms <= 15) {
@@ -21,14 +21,14 @@ function createArrivalDiv(naptanId) {
     id_stem = naptanId + "_arrivals"
     div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card" id="${id_stem}">
     <div class="card-content">
-        <div class="card-content-top">        
+        <div class="card-content-top">
             <div class="row align-items-center card-content-top-inner">
                 <div class="col text-center arrival-station">
                     <div class="h3" id="${id_stem}_name">
-                    </div>                   
+                    </div>
                 </div>
                 <div class="col col-1 h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>&times;</a></div>
-            </div>  
+            </div>
         </div>
         <div class="card-content-bottom align-items-center">
             <div class="h4 align-items-center indicator invisible" id="${id_stem}_indicator">
@@ -41,7 +41,7 @@ function createArrivalDiv(naptanId) {
     </div>
 </div>`
 
-    template.innerHTML = div_text;    
+    template.innerHTML = div_text;
     return template.content.firstChild;
 }
 
@@ -103,7 +103,7 @@ function fillStopData(naptanId) {
     xhr.send();
 }
 
-function fillArrivals(naptanId) {    
+function fillArrivals(naptanId) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', api_host() + "/api/arrivals/" + naptanId, true);
     xhr.onreadystatechange = function () {

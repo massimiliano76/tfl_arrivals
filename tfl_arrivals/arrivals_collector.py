@@ -1,6 +1,6 @@
 from typing import Callable, List
 from tfl_arrivals import db_path, db_cache
-from tfl_arrivals.arrival_data import Arrival, MonitoredStop
+from tfl_arrivals.models import Arrival, MonitoredStop
 import time
 from threading import Thread
 from datetime import datetime, timedelta
@@ -30,7 +30,7 @@ class arrivals_collector(object):
         engine = create_engine(db_path)
         session_factory = sessionmaker(bind=engine)
         session = scoped_session(session_factory)
-        while self.running:            
+        while self.running:
             start_time = datetime.utcnow()
             db_cache.refresh_recently_requested_stop_ids(session)
             end_time = datetime.utcnow()

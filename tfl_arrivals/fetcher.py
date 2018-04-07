@@ -1,7 +1,7 @@
 import requests
 import logging
 from tfl_arrivals import parser
-from tfl_arrivals.arrival_data import Line, LineId, StopId, StopPoint, Arrival
+from tfl_arrivals.models import Line, LineId, StopId, StopPoint, Arrival
 from typing import List
 
 def _fetch(url) -> str:
@@ -40,5 +40,3 @@ def fetch_stops(naptan_id: StopId) -> List[StopPoint]:
 
 def fetch_arrivals(naptan_id: StopId) -> List[Arrival]:
     return parser.parse_arrivals(_fetch_arrivals(naptan_id))
-
-
