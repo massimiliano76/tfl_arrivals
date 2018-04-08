@@ -14,16 +14,18 @@ function showAddStopPanel() {
 
 
 function clearHighlightedLine(list) {
-    for (line of list.getElementsByTagName("li")) {
-        line.classList.remove("active");
+    let li_list = list.getElementsByTagName("li");
+    for (var i = 0; i < li_list.length; i++) {
+        li_list[i].classList.remove("active");
     };
 }
 
 function setHighlightedLine(list, naptan_id) {
     clearHighlightedLine(list);
-    for (line of list.getElementsByTagName("li")) {
-        if (line.getAttribute("data-naptan-id") == naptan_id)
-            line.classList.add("active");
+    let li_list = list.getElementsByTagName("li");
+    for (var i = 0; i < li_list.length; i++) {
+        if (li_list[i].getAttribute("data-naptan-id") == naptan_id)
+            li_list[i].classList.add("active");
     };
     updateAddButtonEnabledState();
 }
@@ -48,13 +50,13 @@ function selectStop(naptan_id) {
 }
 
 function selectedStop() {
-    for (stop of stop_list.getElementsByTagName("li")) {
-        if (stop.classList.contains("active")) {
-            return stop;
-        }
+  let li_list = stop_list.getElementsByTagName("li");
+  for (var i = 0; i < li_list.length; i++) {
+    if (li_list[i].classList.contains("active")) {
+      return li_list[i];
     }
-
-    return null;
+  }
+  return null;
 }
 
 function updateAddButtonEnabledState() {
