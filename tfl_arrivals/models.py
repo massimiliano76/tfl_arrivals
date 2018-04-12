@@ -39,7 +39,6 @@ line_stops = db.Table("line_stops", db.metadata,
 
 class Line(db.Model):
     __tablename__ = "line"
-
     line_id = db.Column(db.String(30), primary_key = True)
     name = db.Column(db.String(40), nullable = False)
     mode_name = db.Column(db.String(10), nullable = False)
@@ -49,8 +48,8 @@ class StopPoint(db.Model):
     __tablename__ = "stop_point"
 
     naptan_id = db.Column(db.String(15), primary_key = True)
-    name = db.Column(db.String(40), nullable = False)
-    indicator = db.Column(db.String(10)) # e.g. "Stop B"
+    name = db.Column(db.String(80), nullable = False)
+    indicator = db.Column(db.String(15)) # e.g. "Stop B", "just after"
     lines = db.relationship("Line", secondary=line_stops, back_populates="stops")
 
     def json(self) -> str:
@@ -64,16 +63,14 @@ class MonitoredStop(db.Model):
 class Arrival(db.Model):
     """Represents one arrival"""
     __tablename__ = "arrival"
-
     arrival_id = db.Column(db.Integer, primary_key = True)
-    line_id = db.Column(db.String, db.ForeignKey("line.line_id"))
+    line_id = db.Column(db.String(15), db.ForeignKey("line.line_id"))
     vehicle_id = db.Column(db.String(10), nullable = False)
-    naptan_id = db.Column(db.String(15), db.ForeignKey("monitored_stop.naptan_id"))
+    naptan_id = db.Column(db.String(15))
     towards = db.Column(db.String(40), nullable = False)
-    destination_name = db.Column(db.String(40), nullable = False)
+    destination_name = db.Column(db.String(80), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
     ttl = db.Column(db.DateTime, nullable = False)
-    stop = db.relationship(MonitoredStop)
     line = db.relationship("Line", uselist = False)
 
     def __repr__(self):
