@@ -11,19 +11,19 @@ def _fetch(url) -> str:
     return response.text
 
 def _fetch_arrivals(naptan_id: LineId) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}/Arrivals")
+    return _fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}/Arrivals?app_id=76f03b58&app_key=9ed6c978c085bce57c78d17490517787")
 
 def _fetch_lines(mode: str) -> str:
     return _fetch(f"https://api.tfl.gov.uk/Line/Mode/{mode}")
 
 def _fetch_line_stops(line_id: LineId) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}/StopPoints")
+    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}/StopPoints?app_id=76f03b58&app_key=9ed6c978c085bce57c78d17490517787")
 
 def _fetch_stops(naptan_id: StopId) -> str:
     return _fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}")
 
 def _fetch_line_data(line_id: LineId) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}")
+    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}?app_id=76f03b58&app_key=9ed6c978c085bce57c78d17490517787")
 
 
 def fetch_lines(mode: str) -> List[Line]:

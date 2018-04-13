@@ -1,7 +1,6 @@
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
-from tfl_arrivals import db_path
 from tfl_arrivals.models import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stops, fetch_line_data, fetch_arrivals
 from datetime import datetime, timedelta
@@ -152,7 +151,7 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
     logger = logging.getLogger(__name__)
     #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     last_updated = __get_update_timestamp(session, desc.type, desc.id)
-    logger.debug(f"Cache for type {desc.type} last updated: {last_updated}")
+    logger.debug(f"Cache for type {desc.type}, {desc.id} last updated: {last_updated}")
 
     if last_updated == None or (datetime.utcnow() - last_updated) > desc.valid_for:
         logger.info(f"Refreshing {desc.type} data, id = '{desc.id}'")

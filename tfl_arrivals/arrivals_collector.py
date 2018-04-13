@@ -1,5 +1,5 @@
 from typing import Callable, List
-from tfl_arrivals import db_path, db_cache
+from tfl_arrivals import db_uri, db_cache
 from tfl_arrivals.models import Arrival, MonitoredStop
 import time
 from threading import Thread
@@ -27,7 +27,7 @@ class arrivals_collector(object):
         self.running = False
 
     def _run_loop(self):
-        engine = create_engine(db_path)
+        engine = create_engine(db_uri)
         session_factory = sessionmaker(bind=engine)
         session = scoped_session(session_factory)
         while self.running:
