@@ -19,6 +19,8 @@ def get_db_uri(app, auth):
 cwd = os.getcwd()
 config = configparser.ConfigParser()
 config.read(cwd + "/tfl_arrivals/app.cfg")
+config["app"]["cache_api_responses"] = "True"
+config["app"]["use_api_response_cache"] = "True"
 
 config_auth = configparser.ConfigParser()
 config_auth.read(cwd + "/tfl_arrivals/auth.cfg")

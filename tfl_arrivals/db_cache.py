@@ -55,7 +55,7 @@ def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
         stop.lines.append(line)
 
         __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
-        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
+        #logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
     session.commit()
 
 def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
@@ -71,7 +71,7 @@ def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
     logger = logging.getLogger(__name__)
     stops = fetch_stops(naptan_id)
     for stop in stops:
-        logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
+        #logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
         __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
         session.add(stop)
     session.commit()
