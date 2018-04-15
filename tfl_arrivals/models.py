@@ -50,6 +50,22 @@ class StopPoint(db.Model):
     naptan_id = db.Column(db.String(15), primary_key = True)
     name = db.Column(db.String(80), nullable = False)
     indicator = db.Column(db.String(15)) # e.g. "Stop B", "just after"
+    stop_letter = db.Column(db.String(8), nullable = True)
+    latitude = db.Column(db.Float(precision=32), nullable = False)
+    longitude = db.Column(db.Float(precision=32), nullable = False)
+    sms_code = db.Column(db.String(5), nullable = True)
+    mode_bus = db.Column(db.Boolean, unique = False, default = False)
+    mode_cablecar = db.Column(db.Boolean, unique = False, default = False)
+    mode_coach = db.Column(db.Boolean, unique = False, default = False)
+    mode_dlr = db.Column(db.Boolean, unique = False, default = False)
+    mode_nationalrail = db.Column(db.Boolean, unique = False, default = False)
+    mode_overground = db.Column(db.Boolean, unique = False, default = False)
+    mode_riverbus = db.Column(db.Boolean, unique = False, default = False)
+    mode_tflrail = db.Column(db.Boolean, unique = False, default = False)
+    mode_tram = db.Column(db.Boolean, unique = False, default = False)
+    mode_tube = db.Column(db.Boolean, unique = False, default = False)
+
+
     lines = db.relationship("Line", secondary=line_stops, back_populates="stops")
 
     def json(self) -> str:

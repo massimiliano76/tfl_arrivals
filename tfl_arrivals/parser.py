@@ -43,9 +43,28 @@ def parse_line(raw_json: str) -> Line:
                 mode_name = raw["modeName"])
 
 def _parse_stop(stop_json) -> StopPoint:
+    def get_optional(json, key):
+        return json[key] if key in stop_json else ""
+
+    modes = set(stop_json["modes"])
     return StopPoint(naptan_id = stop_json["naptanId"],
                 name = stop_json["commonName"],
-                indicator = stop_json["indicator"] if "indicator" in stop_json else "")
+                indicator = get_optional(stop_json, "indicator"),
+                stop_letter = get_optional(stop_json, "stopLetter"),
+                latitude = float(stop_json["lat"]),
+                longitude = float(stop_json["lon"]),
+                sms_code = get_optional(stop_json, "smsCode"),
+                mode_bus = "bus" in modes,
+                mode_cablecar = "cable-car" in modes,
+                mode_coach = "coach" in modes,
+                mode_dlr = "dlr" in modes,
+                mode_nationalrail = "national-rail" in modes,
+                mode_overground = "overground" in modes,
+                mode_riverbus = "river-bus" in modes,
+                mode_tflrail = "tflrail" in modes,
+                mode_tram = "tram" in modes,
+                mode_tube = "tube" in modes
+                )
 
 
 monitoredTypes = ["NaptanPublicBusCoachTram", "NaptanMetroStation", "NaptanCoachBay"]
