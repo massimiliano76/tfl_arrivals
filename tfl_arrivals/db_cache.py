@@ -72,14 +72,19 @@ def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
     stops = fetch_stops(naptan_id)
     for stop in stops:
         #logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
+        # TODO This should do a proper update instead of remove-instert
+        session.query(StopPoint).filter(StopPoint.naptan_id == stop.naptan_id).delete()
         __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
         session.add(stop)
     session.commit()
 
+# TODO Separate delete and update step doesn't work for stops as a singe
+# fetch usually returns multiple stops, not just the one requested
+# For now __delete_stop_point has been merged to __cache_stop_point
 def __delete_stop_point(session: scoped_session, id: str) -> None:
     """Deletes a single line data from the database"""
-    session.query(StopPoint).filter(StopPoint.naptan_id == id).delete()
-    session.commit()
+    # session.query(StopPoint).filter(StopPoint.naptan_id == id).delete()
+    # session.commit()
 
 
 ### Arrivals at a single stop point
