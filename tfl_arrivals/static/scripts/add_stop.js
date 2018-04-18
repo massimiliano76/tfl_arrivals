@@ -1,17 +1,6 @@
 
 function showAddStopPanel() {
-    line_select_page.classList.remove("line-list-out");
-    line_select_page.classList.remove("line-list-in");
-    line_select_page.style.display = "block";
-    stop_select_page.classList.remove("stop-list-in");
-    stop_select_page.classList.remove("stop-list-out");
-    stop_select_page.style.display = "none";
-    back_button.style.display = "none";
-    clearStops();
-    clearHighlightedLine(line_list);
 }
-
-
 
 function clearHighlightedLine(list) {
     let li_list = list.getElementsByTagName("li");
@@ -27,7 +16,6 @@ function setHighlightedLine(list, naptan_id) {
         if (li_list[i].getAttribute("data-naptan-id") == naptan_id)
             li_list[i].classList.add("active");
     };
-    updateAddButtonEnabledState();
 }
 
 function addStop() {
@@ -41,12 +29,12 @@ function clearStops() {
         stop_list.removeChild(stop_list.firstChild);
     }
     clearHighlightedLine(stop_list);
-    updateAddButtonEnabledState();
 }
 
 function selectStop(naptan_id) {
     setHighlightedLine(stop_list, naptan_id);
-    updateAddButtonEnabledState();
+    addStop();
+    $(stop_add_screen).modal('hide');
 }
 
 function selectedStop() {
@@ -59,15 +47,10 @@ function selectedStop() {
   return null;
 }
 
-function updateAddButtonEnabledState() {
-    add_stop.disabled = (selectedStop() == null);
-}
 
-
-
-function loadStops(line_id) {
+function loadStops(query) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/stops/" + line_id, true);
+    xhr.open('GET', api_host() + "/api/stop_search/" + query, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             stops = JSON.parse(xhr.responseText);
@@ -76,8 +59,8 @@ function loadStops(line_id) {
             for (let stop of stops) {
                 var li = document.createElement("li");
                 var name = stop.name.replace(" Underground Station", "");
-                if (stop.indicator != "") {
-                    name += " (" + stop.indicator + ")";
+                if (stop.stop_letter != "" && stop.stop_letter.length <= 2) {
+                    name += " (" + stop.stop_letter + ")";
                 }
                 li.appendChild(document.createTextNode(name));
                 li.classList.add("list-group-item");
@@ -90,78 +73,8 @@ function loadStops(line_id) {
     xhr.send();
 }
 
-
-function selectLine(line) {
-    loadStops(line.getAttribute("data-naptan-id"));
-    setHighlightedLine(line_list, line.getAttribute("data-naptan-id"));
-
-    line_select_page.classList.add("line-list-out");
-    stop_select_page.classList.add("stop-list-in");
-    stop_select_page.style.display = "block";
-
-    setTimeout(function () {
-        line_select_page.style.display = "none";
-        line_select_page.classList.remove("line-list-out");
-        stop_select_page.classList.remove("stop-list-in");
-    }, 700);
-    back_button.style.display = "block";
-}
-
-
-function backToStopList() {
-    line_select_page.classList.add("line-list-in");
-    stop_select_page.classList.add("stop-list-out");
-    line_select_page.style.display = "block";
-
-    setTimeout(function () {
-        line_select_page.classList.remove("line-list-in");
-        stop_select_page.classList.remove("stop-list-out");
-        stop_select_page.style.display = "none";
-        clearStops();
-    }, 700);
-
-    back_button.style.display = "none";
-    clearHighlightedLine(line_list);
-}
-
-
-
-function filterItems(pattern, list) {
-    var items = list.getElementsByTagName("li");
-
-    var count = 0;
-    for (i = 0; i < items.length; i++) {
-        if (items[i].innerHTML.toUpperCase().indexOf(pattern.toUpperCase()) > -1) {
-            items[i].style.display = "block";
-            count++;
-        } else {
-            items[i].style.display = "none";
-        }
-    }
-    return count;
-}
-
-
-function selectFirstVisible(line_list) {
-    var items = line_list.getElementsByTagName("li");
-
-    var count = 0;
-    for (i = 0; i < items.length; i++) {
-        if (items[i].style.display == "block") {
-            selectLine(items[i]);
-            return;
-        }
-    }
-}
-
-
-line_search.addEventListener('keyup', function () {
-    if (filterItems(this.value, line_list) == 0) {
-        clearStops();
-    }
-    selectFirstVisible(line_list);
-});
-
 stop_search.addEventListener('keyup', function () {
-    filterItems(this.value, stop_list);
+    if(stop_search.value.length >= 3) {
+      loadStops(stop_search.value);
+    }
 });

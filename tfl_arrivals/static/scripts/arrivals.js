@@ -129,7 +129,7 @@ function refreshArrivalDivs(repeat = true) {
     for (stop of ms) {
         div = document.getElementById(stop + "_arrivals");
         if (div == null) {
-            arrival_cards.appendChild(createArrivalDiv(stop));
+            arrival_cards.insertBefore(createArrivalDiv(stop), add_arrival_card);
         }
     }
 

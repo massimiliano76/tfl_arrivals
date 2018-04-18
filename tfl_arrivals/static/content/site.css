@@ -14,6 +14,22 @@ div.arrival-card {
     height: 20em;
     padding-right: 10px;
     padding-left: 10px;
+    animation-duration: 0.5s;
+    animation-name: addCard;
+}
+
+@keyframes addCard {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 div.card-content {
@@ -22,6 +38,43 @@ div.card-content {
     background-color: #395a71;
     color: white;
 }
+
+#add_arrival_card {
+    height: 20em;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+#add_button {
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+#add_button > span {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  border: 0;
+  background-color: inherit;
+
+}
+
+#add_icon {
+  font-size: 15em;
+  align-self: center;
+  text-transform: center;
+}
+
+div.add-card-content {
+    height: 90%;
+    border-radius: 15px;
+    background-color: #dddddd;
+    color: #aaaaaa;
+    justify-content: center;
+}
+
 
 
 div.card-content-top {
