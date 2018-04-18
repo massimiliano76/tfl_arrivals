@@ -19,7 +19,7 @@ function expectedInMinutes(ts) {
 function createArrivalDiv(naptanId) {
     var template = document.createElement('template');
     id_stem = naptanId + "_arrivals"
-    div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card" id="${id_stem}">
+    div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="${id_stem}">
     <div class="card-content">
         <div class="card-content-top">
             <div class="row align-items-center card-content-top-inner">
@@ -76,7 +76,9 @@ function getDisplayName(name) {
 function removeMonitoredStationDiv(naptan_id) {
     deleteMonitoredStopFromCookie(naptan_id);
     div = document.getElementById(naptan_id + "_arrivals");
-    arrival_cards.removeChild(div);
+    div.classList.remove("add-card");
+    div.classList.add("remove-card");
+    setTimeout( () => {arrival_cards.removeChild(div)} , 500);
 }
 
 
