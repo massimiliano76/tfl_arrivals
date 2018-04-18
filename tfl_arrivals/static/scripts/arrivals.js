@@ -92,7 +92,7 @@ function fillStopData(naptanId) {
             if (document.getElementById(naptanId + "_arrivals") != null) {
                 document.getElementById(naptanId + "_arrivals_name").innerHTML = getDisplayName(stop_data["name"]);
                 indicatorDiv = document.getElementById(naptanId + "_arrivals_indicator");
-                indicatorText = stop_data["indicator"].replace("Stop", "");
+                indicatorText = stop_data["stop_letter"];
                 if (indicatorText != "") {
                     indicatorDiv.classList.remove("invisible");
                     indicatorDiv.innerHTML = indicatorText;

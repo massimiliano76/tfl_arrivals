@@ -69,7 +69,7 @@ class StopPoint(db.Model):
     lines = db.relationship("Line", secondary=line_stops, back_populates="stops")
 
     def json(self) -> str:
-        return f'{{"naptan_id": "{self.naptan_id}", "indicator": "{self.indicator}", "name": "{self.name}"}}'
+        return f'{{"naptan_id": "{self.naptan_id}", "stop_letter": "{self.stop_letter}", "name": "{self.name}"}}'
 
 class MonitoredStop(db.Model):
     __tablename__ = "monitored_stop"
