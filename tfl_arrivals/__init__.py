@@ -15,29 +15,15 @@ def get_db_uri(app, auth):
         replace("{db}", dba["name"])
     return uri
 
-
-cwd = os.getcwd()
-config = configparser.ConfigParser()
-config.read(cwd + "/tfl_arrivals/app.cfg")
-config["app"]["cache_api_responses"] = "False"
-config["app"]["use_api_response_cache"] = "False"
-
-config_auth = configparser.ConfigParser()
-config_auth.read(cwd + "/tfl_arrivals/auth.cfg")
-
 app = Flask(__name__)
-db_uri = get_db_uri(config, config_auth)
-app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = False
 
-db = SQLAlchemy(app)
+inst_path = app.instance_path
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s - %(threadName)s	- %(module)s - %(levelname)s - %(message)s")
 
-fh = logging.FileHandler("arrivals.log")
+fh = logging.FileHandler(inst_path + "/arrivals.log")
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 
@@ -47,5 +33,22 @@ sh.setFormatter(formatter)
 
 logger.addHandler(fh)
 logger.addHandler(sh)
+
+logger.error("inst_path = "+ inst_path)
+
+config = configparser.ConfigParser()
+config.read(inst_path + "/app.cfg")
+config["app"]["cache_api_responses"] = "False"
+config["app"]["use_api_response_cache"] = "False"
+
+config_auth = configparser.ConfigParser()
+config_auth.read(inst_path + "/auth.cfg")
+
+db_uri = get_db_uri(config, config_auth)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ECHO"] = False
+
+db = SQLAlchemy(app)
 
 import tfl_arrivals.views
