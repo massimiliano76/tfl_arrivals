@@ -191,6 +191,17 @@ def get_stops_of_line(session: scoped_session, line_id: LineId) -> List[StopPoin
     __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
 
+def search_stop(session: scoped_session, query_string: str, max_count: int) -> List[StopPoint]:
+    """Retrieves all the stops from the local database that matches the query. If
+    more than max_count matches are in the database, an empty list is returned"""
+
+    q = session.query(StopPoint).filter(StopPoint.name.like(f"%{query_string}%"))
+
+    if q.count() > max_count:
+        return []
+    else:
+        return q.all()
+
 
 def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
     ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1),
