@@ -169,9 +169,9 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
 ### Public methods
 def get_all_lines(session: scoped_session) -> List[Line]:
     """Retrieves all lines, using the local database if possible"""
-    # ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1),
-    #                          __cache_lines, __delete_lines)
-    # __update_cache(session, ud)
+    ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1),
+                          __cache_lines, __delete_lines)
+    __update_cache(session, ud)
     return session.query(Line).order_by(Line.mode_name.desc(),Line.name).all()
 
 def get_line(session: scoped_session, line_id: LineId) -> Line:
@@ -179,9 +179,9 @@ def get_line(session: scoped_session, line_id: LineId) -> Line:
     If stop data is present in the database it is also returned, but
     this funtion doesn't fetch it if missing.
     Use get_stops_of_lines if stop data is required"""
-    # ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1),
-    #                          __cache_line_data, __delete_line_data)
-    # __update_cache(session, ud)
+    ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1),
+                          __cache_line_data, __delete_line_data)
+    __update_cache(session, ud)
     return session.query(Line).filter(Line.line_id == line_id).one()
 
 # def get_stops_of_line(session: scoped_session, line_id: LineId) -> List[StopPoint]:
