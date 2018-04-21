@@ -20,12 +20,10 @@ def start_collector():
 
 @app.route('/')
 def arrivals():
-    lines = db_cache.get_all_lines(db.session)
     return render_template(
         "arrival_boards.html",
         title="London Arrivals",
-        year=datetime.utcnow().year,
-        lines=lines)
+        year=datetime.utcnow().year)
 
 @app.route('/about')
 def about():
