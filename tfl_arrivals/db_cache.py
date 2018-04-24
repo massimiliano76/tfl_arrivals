@@ -1,69 +1,12 @@
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
-from tfl_arrivals.models import Line, modes, LineId, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
-from tfl_arrivals.fetcher import fetch_lines, fetch_line_stops, fetch_stops, fetch_line_data, fetch_arrivals
+from tfl_arrivals.models import modes, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
+from tfl_arrivals.fetcher import fetch_stops, fetch_arrivals
 from datetime import datetime, timedelta
 from typing import List, Callable
 
 module_logger = logging.getLogger(__name__)
-
-### All lines
-def __cache_lines(session: scoped_session, id: str) -> None:
-    """Fetches the data for all lines from TFL and stores in the database"""
-    logger = logging.getLogger(__name__)
-    for mode in modes:
-        logger.info(f"Fetching mode {mode}")
-        for line in fetch_lines(mode):
-            logger.debug(f"Adding line {line.name} to database")
-            session.add(line)
-
-    session.commit()
-
-def __delete_lines(session: scoped_session, id: str) -> None:
-    """Deletes all line data from the database"""
-    session.query(Line).delete()
-    session.commit()
-
-
-### Single line
-def __cache_line_data(session: scoped_session, line_id: str) -> None:
-    """Fetches the data for a single line from TFL and stores in the database"""
-    logger = logging.getLogger(__name__)
-    line = fetch_line_data(line_id)
-    logger.debug(f"Adding line {line.name} to database")
-    session.add(line)
-    session.commit()
-
-def __delete_line_data(session: scoped_session, id: str) -> None:
-    """Deletes a single line data from the database"""
-    session.query(Line).filter(Line.line_id == id).delete()
-    session.commit()
-
-
-### All stops for one line
-def __cache_line_stops(session: scoped_session, line_id: LineId) -> None:
-    """Fetches all stops data for a single line from TFL and stores in the database"""
-    logger = logging.getLogger(__name__)
-    line = get_line(session, line_id)
-
-    logger.info(f"Fetching stops for line {line.line_id}")
-    for stop in fetch_line_stops(line_id):
-        db_stop = session.query(StopPoint).filter(StopPoint.naptan_id == stop.naptan_id).one_or_none()
-        if db_stop is not None:
-            stop = db_stop
-        stop.lines.append(line)
-
-        __save_update_timestamp(session, CachedDataType.stop_point, stop.naptan_id)
-        #logger.debug(f"Adding stop '{stop.name}', '{stop.indicator}' to database")
-    session.commit()
-
-def __delete_line_stops(session: scoped_session, line_id: LineId) -> None:
-    """Deletes all stops data for a single line data from the database"""
-    line = get_line(session, line_id)
-    line.stops = []
-    session.commit()
-
 
 ### Single Stop Point
 def __cache_stop_point(session: scoped_session, naptan_id: str) -> None:
@@ -167,30 +110,6 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
 
 
 ### Public methods
-def get_all_lines(session: scoped_session) -> List[Line]:
-    """Retrieves all lines, using the local database if possible"""
-    ud = __UpdateDescription(CachedDataType.line_list, "", timedelta(days=1),
-                          __cache_lines, __delete_lines)
-    __update_cache(session, ud)
-    return session.query(Line).order_by(Line.mode_name.desc(),Line.name).all()
-
-def get_line(session: scoped_session, line_id: LineId) -> Line:
-    """Retrieves basic data of one line, using the local database if possible.
-    If stop data is present in the database it is also returned, but
-    this funtion doesn't fetch it if missing.
-    Use get_stops_of_lines if stop data is required"""
-    ud = __UpdateDescription(CachedDataType.line_data, line_id, timedelta(days=1),
-                          __cache_line_data, __delete_line_data)
-    __update_cache(session, ud)
-    return session.query(Line).filter(Line.line_id == line_id).one()
-
-# def get_stops_of_line(session: scoped_session, line_id: LineId) -> List[StopPoint]:
-#     """Retrieves all the stops of one lines, using the local database if possible"""
-#     ud = __UpdateDescription(CachedDataType.line_stops, line_id, timedelta(days=1),
-#                              __cache_line_stops, __delete_line_stops)
-#     __update_cache(session, ud)
-#     return session.query(StopPoint).filter(StopPoint.lines.any(line_id = line_id)).all()
-#
 
 def search_stop(session: scoped_session, query_string: str, max_count: int) -> List[StopPoint]:
     """Retrieves all the stops from the local database that matches the query. If

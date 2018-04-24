@@ -7,17 +7,12 @@ import enum
 
 VehicleId = NewType("VehicleId", str)
 StopId = NewType("VehicleId", str)
-LineId = NewType("LineId", str)
 
 modes = ["tube", "bus"]
 
 class CachedDataType(enum.Enum):
-    line_list = 1
-    stop_point = 2
-    arrival = 3
-    line_stops = 4
-    line_data = 5
-
+    stop_point = 1
+    arrival = 2
 
 class CacheTimestamp(db.Model):
     __tablename__ = "cache_timestamp"
@@ -32,17 +27,6 @@ class ArrivalRequest(db.Model):
     naptan_id = db.Column(db.String(15))
     request_time = db.Column(db.DateTime, default=datetime.utcnow)
 
-
-line_stops = db.Table("line_stops", db.metadata,
-                   db.Column("line_id", db.String(30), db.ForeignKey("line.line_id")),
-                   db.Column("stop_point_id", db.String(15), db.ForeignKey("stop_point.naptan_id")))
-
-class Line(db.Model):
-    __tablename__ = "line"
-    line_id = db.Column(db.String(30), primary_key = True)
-    name = db.Column(db.String(40), nullable = False)
-    mode_name = db.Column(db.String(10), nullable = False)
-    stops = db.relationship("StopPoint", secondary=line_stops, back_populates="lines")
 
 class StopPoint(db.Model):
     __tablename__ = "stop_point"
@@ -65,9 +49,8 @@ class StopPoint(db.Model):
     mode_tram = db.Column(db.Boolean, unique = False, default = False)
     mode_tube = db.Column(db.Boolean, unique = False, default = False)
 
-
-    lines = db.relationship("Line", secondary=line_stops, back_populates="stops")
-
+    def str(self) -> str:
+        return f'{self.naptan_id}, {self.name}, {self.latitude}, {self.longitude}'
     def json(self) -> str:
         return f'{{"naptan_id": "{self.naptan_id}", "stop_letter": "{self.stop_letter}", "name": "{self.name}"}}'
 
@@ -80,17 +63,16 @@ class Arrival(db.Model):
     """Represents one arrival"""
     __tablename__ = "arrival"
     arrival_id = db.Column(db.Integer, primary_key = True)
-    line_id = db.Column(db.String(15), db.ForeignKey("line.line_id"))
+    line_name = db.Column(db.String(40))
     vehicle_id = db.Column(db.String(10), nullable = False)
     naptan_id = db.Column(db.String(15))
     towards = db.Column(db.String(40), nullable = False)
     destination_name = db.Column(db.String(80), nullable = False)
     expected = db.Column(db.DateTime, nullable = False)
     ttl = db.Column(db.DateTime, nullable = False)
-    line = db.relationship("Line", uselist = False)
 
     def __repr__(self):
-        return f"Arrival(arrival_id={self.arrival_id}, line_id='{self.line_id}', " +\
+        return f"Arrival(arrival_id={self.arrival_id}, line_name='{self.line_name}', " +\
                f"vehicle_id='{self.vehicle_id}', naptan_id='{self.naptan_id}', " +\
                f"towards='{self.towards}', destination_name='{self.destination_name}', " +\
                f"expected='{self.expected}', ttl='{self.ttl}')"
@@ -116,7 +98,7 @@ class Arrival(db.Model):
         self.ttl = other.ttl
 
     def as_tuple(self):
-        return (self.arrival_id, self.line_id, self.vehicle_id, self.naptan_id, self.towards, self.destination_name, self.expected, self.ttl)
+        return (self.arrival_id, self.line_name, self.vehicle_id, self.naptan_id, self.towards, self.destination_name, self.expected, self.ttl)
 
     def __eq__(self, other) -> bool:
         if type(self) != type(other):

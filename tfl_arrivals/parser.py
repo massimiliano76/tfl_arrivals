@@ -1,6 +1,6 @@
 import logging
 from typing import List, Dict
-from tfl_arrivals.models import Arrival, StopId, VehicleId, Line, StopPoint
+from tfl_arrivals.models import Arrival, StopId, VehicleId, StopPoint
 import json
 from datetime import datetime
 
@@ -16,7 +16,7 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
         else:
             raw["towards"]
         arrival = Arrival(arrival_id = int(raw["id"]),
-                          line_id = raw["lineId"],
+                          line_name = raw["lineName"],
                           vehicle_id = VehicleId(raw["vehicleId"]),
                           naptan_id = StopId(raw["naptanId"]),
                           expected = datetime.strptime(raw["expectedArrival"], parse_string),
@@ -26,21 +26,6 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
                           )
         arrivals.append(arrival)
     return arrivals
-
-def parse_lines(raw_json: str) -> List[Line]:
-    lines = []
-    for raw in json.loads(raw_json):
-        line = Line(line_id = raw["id"],
-                    name = raw["name"],
-                    mode_name = raw["modeName"])
-        lines.append(line)
-    return lines
-
-def parse_line(raw_json: str) -> Line:
-    raw = json.loads(raw_json)[0]
-    return Line(line_id = raw["id"],
-                name = raw["name"],
-                mode_name = raw["modeName"])
 
 def _parse_stop(stop_json) -> StopPoint:
     def get_optional(json, key):
@@ -79,13 +64,6 @@ def _parse_stops(stop_json) -> List[StopPoint]:
 
     for child in stop_json["children"]:
         stops += _parse_stops(child)
-    return stops
-
-def parse_line_stops(raw_json: str) -> List[StopPoint]:
-    stops = []
-    for raw in json.loads(raw_json):
-        stop = _parse_stop(raw)
-        stops.append(stop)
     return stops
 
 def parse_stops(raw_json: str) -> List[StopPoint]:

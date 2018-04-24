@@ -57,7 +57,7 @@ function createArrivalList(arrivals, id) {
         for (arr of arrivals) {
             dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
             arrivals_list += `<tr>
-                <td class="arrival-data arrival-line">${arr.lineId}</td>
+                <td class="arrival-data arrival-line">${arr.lineName}</td>
                 <td class="arrival-data arrival-towards">${dest}</td>
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`

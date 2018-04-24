@@ -4,13 +4,13 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 import logging
 from tfl_arrivals import parser, config, config_auth
-from tfl_arrivals.models import Line, LineId, StopId, StopPoint, Arrival
+from tfl_arrivals.models import StopId, StopPoint, Arrival
 from typing import List
 
 
 def __fetch_url(url) -> str:
     s = requests.Session()
-    retries = Retry(total=5, backoff_factor=0.1)
+    retries = Retry(total=5, backoff_factor=0.2)
     s.mount('https://', HTTPAdapter(max_retries=retries))
     keys = {"app_id" : config_auth['tfl_api']['app_id'],
             "app_key" : config_auth['tfl_api']['app_key']}
@@ -55,30 +55,11 @@ def _fetch(url) -> str:
     return response
 
 
-def _fetch_arrivals(naptan_id: LineId) -> str:
+def _fetch_arrivals(naptan_id: StopId) -> str:
     return _fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}/Arrivals")
-
-def _fetch_lines(mode: str) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/Line/Mode/{mode}")
-
-def _fetch_line_stops(line_id: LineId) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}/StopPoints")
 
 def _fetch_stops(naptan_id: StopId) -> str:
     return _fetch(f"https://api.tfl.gov.uk/StopPoint/{naptan_id}")
-
-def _fetch_line_data(line_id: LineId) -> str:
-    return _fetch(f"https://api.tfl.gov.uk/Line/{line_id}")
-
-
-def fetch_lines(mode: str) -> List[Line]:
-    return parser.parse_lines(_fetch_lines(mode))
-
-def fetch_line_data(line_id: LineId) -> Line:
-    return parser.parse_line(_fetch_line_data(line_id))
-
-def fetch_line_stops(line_id: LineId) -> List[StopPoint]:
-    return parser.parse_line_stops(_fetch_line_stops(line_id))
 
 def fetch_stops(naptan_id: StopId) -> List[StopPoint]:
     return parser.parse_stops(_fetch_stops(naptan_id))

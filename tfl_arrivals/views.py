@@ -5,7 +5,7 @@ Routes and views for the flask application.
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, Response
 from tfl_arrivals import app, db_cache, arrivals_collector, db
-from tfl_arrivals.models import Arrival, StopPoint, Line, ArrivalRequest
+from tfl_arrivals.models import Arrival, StopPoint, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_arrivals
 import json
 from os import path
@@ -34,12 +34,6 @@ def about():
         year=datetime.utcnow().year
     )
 
-@app.route('/api/stops/<string:line_id>')
-def api_line_stops(line_id):
-    stops = db_cache.get_stops_of_line(db.session, line_id)
-    resp = Response("[" + ", ".join([stop.json() for stop in stops]) + "]", status=200, mimetype='application/json')
-    return resp
-
 @app.route('/api/stop_search/<string:query>')
 def api_stop_search(query):
     stops = db_cache.search_stop(db.session, query, 100)
@@ -56,7 +50,7 @@ def api_arrivals(naptan_id):
                      "arrivals": [{"towards" : arr.towards,
                                    "destination_name": arr.destination_name,
                                    "expected" : str(arr.expected),
-                                   "lineId": arr.line.name} for arr in arrivals]
+                                   "lineName": arr.line_name} for arr in arrivals]
                      }
 
     resp = Response(json.dumps(response_data), status=200, mimetype='application/json')
