@@ -46,6 +46,7 @@ config_auth.read(inst_path + "/auth.cfg")
 
 db_uri = get_db_uri(config, config_auth)
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 280
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = False
 
