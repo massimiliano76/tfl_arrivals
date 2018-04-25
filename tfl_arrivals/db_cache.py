@@ -124,9 +124,9 @@ def search_stop(session: scoped_session, query_string: str, max_count: int) -> L
 
 
 def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
-    ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1),
-                             __cache_stop_point, __delete_stop_point)
-    __update_cache(session, ud)
+    # ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1),
+    #                          __cache_stop_point, __delete_stop_point)
+    # __update_cache(session, ud)
     return session.query(StopPoint).filter(StopPoint.naptan_id == naptan_id).one()
 
 def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
