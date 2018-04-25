@@ -11,6 +11,7 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
     arrivals = []
     for raw in json.loads(raw_json):
         parse_string = "%Y-%m-%dT%H:%M:%SZ"
+        dest = ""
         if "destinationName" in raw:
             dest = raw["destinationName"]
         else:
