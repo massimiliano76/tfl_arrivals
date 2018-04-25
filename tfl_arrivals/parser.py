@@ -60,7 +60,8 @@ def _parse_stops(stop_json) -> List[StopPoint]:
         return stops
 
     if stop_json["stopType"] in monitoredTypes:
-        stops.append(_parse_stop(stop_json))
+        if len(stop_json["lines"]) != 0:
+            stops.append(_parse_stop(stop_json))
 
     for child in stop_json["children"]:
         stops += _parse_stops(child)
