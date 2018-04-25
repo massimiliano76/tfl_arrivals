@@ -15,7 +15,7 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
         if "destinationName" in raw:
             dest = raw["destinationName"]
         else:
-            raw["towards"]
+            dest = raw["towards"]
         arrival = Arrival(arrival_id = int(raw["id"]),
                           line_name = raw["lineName"],
                           vehicle_id = VehicleId(raw["vehicleId"]),
