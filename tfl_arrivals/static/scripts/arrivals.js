@@ -69,8 +69,21 @@ function createArrivalList(arrivals, id) {
     return template.content.firstChild;
 }
 
+const shorterNames = {
+  "Hammersmith (Dist&Picc Line)": "Hammersmith (Dist&Picc)",
+  "Edgware Road (Circle Line)": "Edgware Road (Circle)",
+  "Hammersmith (H&C Line)": "Hammersmith (H&C )",
+  "Cutty Sark (for Maritime Greenwich)": "Cutty Sark (for Maritime Gr.)",
+  "Heathrow Terminals 1-2-3": "Heathrow 1-2-3",
+}
+
 function getDisplayName(name) {
-    return name.replace(" Underground Station", "");
+    let s = name.replace(" Underground Station", "");
+    s = s.replace(" DLR Station", "");
+    if(s in shorterNames) {
+      s = shorterNames[s];
+    }
+    return s;
 }
 
 function removeMonitoredStationDiv(naptan_id) {
