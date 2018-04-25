@@ -145,8 +145,10 @@ div.card-content-bottom {
 
 }
 
-.arrival-line {
-  text-alig: left;
+.arrival-line,
+.arrival-towards
+{
+  text-align: left;
   /* width: 35% */
 }
 
