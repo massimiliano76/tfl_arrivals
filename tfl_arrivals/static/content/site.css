@@ -60,6 +60,7 @@ div.card-content {
     border-radius: 15px;
     background-color: #395a71;
     color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0, 0.42), 0 2px 4px rgba(0,0,0, 0.64);
 }
 
 #add_arrival_card {
