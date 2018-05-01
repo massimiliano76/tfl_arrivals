@@ -176,6 +176,12 @@ div.card-content-bottom {
     box-shadow: 0 2px 4px rgba(0,0,0, 0.42), 0 2px 4px rgba(0,0,0, 0.64);
 }
 
+.indicator-letter {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 /****************/
 /* Add new stop */
 /****************/

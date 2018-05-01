@@ -31,7 +31,8 @@ function createArrivalDiv(naptanId) {
             </div>
         </div>
         <div class="card-content-bottom align-items-center">
-            <div class="h4 align-items-center indicator invisible" id="${id_stem}_stop_letter">
+            <div class="h4 indicator invisible">
+              <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
             </div >
             <table class="arrival-table" id="${id_stem}_table">
                 <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
@@ -109,7 +110,7 @@ function fillStopData(naptanId) {
                 stop_letter_div = document.getElementById(naptanId + "_arrivals_stop_letter");
                 stop_letter = stop_data["stop_letter"];
                 if (stop_letter != "" && stop_letter.length <= 2) {
-                    stop_letter_div.classList.remove("invisible");
+                    stop_letter_div.parentElement.classList.remove("invisible");
                     stop_letter_div.innerHTML = stop_letter;
                 }
             }
