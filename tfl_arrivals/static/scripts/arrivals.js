@@ -20,8 +20,12 @@ function createArrivalDiv(naptanId) {
     var template = document.createElement('template');
     id_stem = naptanId + "_arrivals"
     div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="${id_stem}">
-    <div class="card-content">
-        <div class="card-content-top">
+    <div class="card-content align-items-center">
+        <div class="indicator invisible">
+          <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
+        </div >
+        <div class="card-content-top align-items-center">
+
             <div class="row align-items-center card-content-top-inner">
                 <div class="col text-center arrival-station">
                     <div class="h3" id="${id_stem}_name">
@@ -31,9 +35,6 @@ function createArrivalDiv(naptanId) {
             </div>
         </div>
         <div class="card-content-bottom align-items-center">
-            <div class="h4 indicator invisible">
-              <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
-            </div >
             <table class="arrival-table" id="${id_stem}_table">
                 <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
                 </tbody>
@@ -111,7 +112,14 @@ function fillStopData(naptanId) {
                 stop_letter = stop_data["stop_letter"];
                 if (stop_letter != "" && stop_letter.length <= 2) {
                     stop_letter_div.parentElement.classList.remove("invisible");
-                    stop_letter_div.innerHTML = stop_letter;
+                    stop_letter_div.textContent = stop_letter;
+                }
+                else {
+                  // Add "F" for fuck
+                  // If the div doesn't contain anything then the layout in Firefox
+                  // fill be fucked up, even tough the position is relative
+                  // and in this branch the div is invisible...
+                  stop_letter_div.textContent = "F";
                 }
             }
         }
