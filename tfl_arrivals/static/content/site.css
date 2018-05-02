@@ -60,6 +60,7 @@ div.card-content {
     border-radius: 15px;
     background-color: #395a71;
     color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0, 0.42), 0 2px 4px rgba(0,0,0, 0.64);
 }
 
 #add_arrival_card {
@@ -145,8 +146,10 @@ div.card-content-bottom {
 
 }
 
-.arrival-line {
-  text-alig: left;
+.arrival-line,
+.arrival-towards
+{
+  text-align: left;
   /* width: 35% */
 }
 
@@ -172,6 +175,12 @@ div.card-content-bottom {
     margin-bottom: -40px;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0,0,0, 0.42), 0 2px 4px rgba(0,0,0, 0.64);
+}
+
+.indicator-letter {
+  height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 /****************/

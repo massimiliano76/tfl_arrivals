@@ -11,10 +11,11 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
     arrivals = []
     for raw in json.loads(raw_json):
         parse_string = "%Y-%m-%dT%H:%M:%SZ"
+        dest = ""
         if "destinationName" in raw:
             dest = raw["destinationName"]
         else:
-            raw["towards"]
+            dest = raw["towards"]
         arrival = Arrival(arrival_id = int(raw["id"]),
                           line_name = raw["lineName"],
                           vehicle_id = VehicleId(raw["vehicleId"]),
@@ -60,7 +61,8 @@ def _parse_stops(stop_json) -> List[StopPoint]:
         return stops
 
     if stop_json["stopType"] in monitoredTypes:
-        stops.append(_parse_stop(stop_json))
+        if len(stop_json["lines"]) != 0:
+            stops.append(_parse_stop(stop_json))
 
     for child in stop_json["children"]:
         stops += _parse_stops(child)
