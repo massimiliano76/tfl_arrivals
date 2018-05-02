@@ -4,6 +4,10 @@ body {
     padding-bottom: 20px;
 }
 
+#page_title {
+  text-align: center;
+  margin-bottom: 30px;
+}
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
