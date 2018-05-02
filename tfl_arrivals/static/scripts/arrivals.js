@@ -20,7 +20,7 @@ function createArrivalDiv(naptanId) {
     var template = document.createElement('template');
     id_stem = naptanId + "_arrivals"
     div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="${id_stem}">
-    <div class="card-content align-items-center">
+    <div class="card-content align-items-center noselect">
         <div class="indicator invisible">
           <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
         </div >
