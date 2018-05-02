@@ -47,6 +47,12 @@ function createArrivalDiv(naptanId) {
     return template.content.firstChild;
 }
 
+function shortLineName(s) {
+  if(s == "Hammersmith & City")
+    return "Ham&City";
+  return s;
+}
+
 function createArrivalList(arrivals, id) {
     var template = document.createElement('template');
 
@@ -59,7 +65,7 @@ function createArrivalList(arrivals, id) {
         for (arr of arrivals) {
             dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
             arrivals_list += `<tr>
-                <td class="arrival-data arrival-line">${arr.lineName}</td>
+                <td class="arrival-data arrival-line">${shortLineName(arr.lineName)}</td>
                 <td class="arrival-data arrival-towards">${dest}</td>
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`
@@ -74,7 +80,7 @@ function createArrivalList(arrivals, id) {
 const shorterNames = {
   "Hammersmith (Dist&Picc Line)": "Hammersmith (Dist&Picc)",
   "Edgware Road (Circle Line)": "Edgware Road (Circle)",
-  "Hammersmith (H&C Line)": "Hammersmith (H&C )",
+  "Hammersmith (H&C Line)": "Hammersmith (H&C)",
   "Cutty Sark (for Maritime Greenwich)": "Cutty Sark (for Maritime Gr.)",
   "Heathrow Terminals 1-2-3": "Heathrow 1-2-3",
 }
