@@ -20,21 +20,25 @@ function createArrivalDiv(naptanId) {
     var template = document.createElement('template');
     id_stem = naptanId + "_arrivals"
     div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="${id_stem}">
-    <div class="card-content align-items-center">
+    <div class="card-content align-items-center noselect">
         <div class="indicator invisible">
           <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
         </div >
         <div class="card-content-top align-items-center">
-
             <div class="row align-items-center card-content-top-inner">
                 <div class="col text-center arrival-station">
                     <div class="h3" id="${id_stem}_name">
                     </div>
                 </div>
-                <div class="col col-1 h3 text-center"><a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>&times;</a></div>
+                <div class="col col-1">
+                  <i class="material-icons" onclick='removeMonitoredStationDiv("${naptanId}")'>delete_forever</i>
+                </div>
             </div>
         </div>
         <div class="card-content-bottom align-items-center">
+            <div id="${id_stem}_loader">
+              <div class="loader"></div>
+            </div>
             <table class="arrival-table" id="${id_stem}_table">
                 <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
                 </tbody>
@@ -45,6 +49,12 @@ function createArrivalDiv(naptanId) {
 
     template.innerHTML = div_text;
     return template.content.firstChild;
+}
+
+function shortLineName(s) {
+  if(s == "Hammersmith & City")
+    return "Ham&City";
+  return s;
 }
 
 function createArrivalList(arrivals, id) {
@@ -59,7 +69,7 @@ function createArrivalList(arrivals, id) {
         for (arr of arrivals) {
             dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
             arrivals_list += `<tr>
-                <td class="arrival-data arrival-line">${arr.lineName}</td>
+                <td class="arrival-data arrival-line">${shortLineName(arr.lineName)}</td>
                 <td class="arrival-data arrival-towards">${dest}</td>
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`
@@ -74,7 +84,7 @@ function createArrivalList(arrivals, id) {
 const shorterNames = {
   "Hammersmith (Dist&Picc Line)": "Hammersmith (Dist&Picc)",
   "Edgware Road (Circle Line)": "Edgware Road (Circle)",
-  "Hammersmith (H&C Line)": "Hammersmith (H&C )",
+  "Hammersmith (H&C Line)": "Hammersmith (H&C)",
   "Cutty Sark (for Maritime Greenwich)": "Cutty Sark (for Maritime Gr.)",
   "Heathrow Terminals 1-2-3": "Heathrow 1-2-3",
 }
@@ -140,6 +150,8 @@ function fillArrivals(naptanId) {
                 id = naptanId + "_arrivals_list";
                 old_list = document.getElementById(id);
                 table = document.getElementById(naptanId + "_arrivals_table");
+                loader = document.getElementById(naptanId + "_arrivals_loader");
+                loader.remove();
                 new_list = createArrivalList(stop_arrival_data.arrivals, id);
                 table.replaceChild(new_list, old_list);
             }
