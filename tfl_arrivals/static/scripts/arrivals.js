@@ -25,7 +25,6 @@ function createArrivalDiv(naptanId) {
           <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
         </div >
         <div class="card-content-top align-items-center">
-
             <div class="row align-items-center card-content-top-inner">
                 <div class="col text-center arrival-station">
                     <div class="h3" id="${id_stem}_name">
@@ -35,6 +34,9 @@ function createArrivalDiv(naptanId) {
             </div>
         </div>
         <div class="card-content-bottom align-items-center">
+            <div id="${id_stem}_loader">
+              <div class="loader"></div>
+            </div>
             <table class="arrival-table" id="${id_stem}_table">
                 <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
                 </tbody>
@@ -146,6 +148,8 @@ function fillArrivals(naptanId) {
                 id = naptanId + "_arrivals_list";
                 old_list = document.getElementById(id);
                 table = document.getElementById(naptanId + "_arrivals_table");
+                loader = document.getElementById(naptanId + "_arrivals_loader");
+                loader.remove();
                 new_list = createArrivalList(stop_arrival_data.arrivals, id);
                 table.replaceChild(new_list, old_list);
             }
