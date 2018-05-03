@@ -22,7 +22,7 @@ def start_collector():
 def arrivals():
     return render_template(
         "arrival_boards.html",
-        title="London Arrivals",
+        title="Arrivals of London",
         year=datetime.utcnow().year)
 
 @app.route('/about')
@@ -30,7 +30,7 @@ def about():
     """Renders the About page."""
     return render_template(
         'about.html',
-        title='About London Arrivals',
+        title='About Arrivals of London',
         year=datetime.utcnow().year
     )
 
