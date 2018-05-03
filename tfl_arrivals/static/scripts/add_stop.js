@@ -21,6 +21,7 @@ function setHighlightedLine(list, naptan_id) {
 function addStop() {
     let id = selectedStop().getAttribute("data-naptan-id")
     addMonitoredStop(id);
+    window.scrollTo(0, document.body.scrollHeight);
     refreshArrivalDivs(false);
 }
 
