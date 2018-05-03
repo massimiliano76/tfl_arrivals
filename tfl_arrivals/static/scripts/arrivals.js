@@ -183,4 +183,7 @@ function refreshArrivalDivs(repeat = true) {
 };
 
 
-window.onload = refreshArrivalDivs
+window.onload = function() {
+  refreshArrivalDivs();
+  add_button.classList.remove("invisible");
+}
