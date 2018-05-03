@@ -30,8 +30,8 @@ function createArrivalDiv(naptanId) {
                     <div class="h3" id="${id_stem}_name">
                     </div>
                 </div>
-                <div class="col col-1">
-                  <i class="material-icons" onclick='removeMonitoredStationDiv("${naptanId}")'>delete_forever</i>
+                <div class="col col-1 h3 text-center remove-card-container">
+                  <a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>&times;</a>
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@ body {
 }
 
 #page_title {
+  width: 95%;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -37,6 +38,10 @@ div.arrival-card {
   100% {
     transform: scale(1);
   }
+}
+
+.remove-card-container {
+  padding: 0px;
 }
 
 .remove-card {
@@ -202,24 +207,15 @@ div.card-content-bottom {
     height: 80vh;
 }
 
-#line_select_page {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
-    height: 100%;
-}
 
 #stop_select_page {
-    position: absolute;
     top: 0px;
     left: 0px;
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
     height: 100%;
+    overflow-x: scroll;
 }
 
 .selector-content {
@@ -230,28 +226,16 @@ div.card-content-bottom {
   justify-content: space-between;
 }
 .selector-content > h4 {
-  padding-top: 1.5rem;
+  padding: 1.5rem;
 }
 
-.line-selector {
-}
 
-.line-list-container, .stop-list-container {
-  height: 65vh;
-}
-
-.line-list, .stop-list {
+.stop-list {
     border: 1px solid #999999;
     height: inherit;
     flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
-.line-list-item {
-}
-
-.stop-selector {
 }
 
 .red-border {
