@@ -151,6 +151,14 @@ div.card-content-bottom {
     line-height: 1.3;
 }
 
+.no-arrivals {
+  align-items: center;
+  text-align: center;
+  font-size: 30px;
+  padding-top: 50px;
+  color: white;
+}
+
 .arrival-header {
     align-content: center;
 

@@ -60,12 +60,11 @@ function shortLineName(s) {
 function createArrivalList(arrivals, id) {
     var template = document.createElement('template');
 
-    arrivals_list = ""
+    arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
     if (stop_arrival_data.arrivals.length == 0) {
-        arrivals_list = `<div id="${id}"><h3>No arrivals</h3></div>`;
+        arrivals_list += `<tr><td class="no-arrivals">No arrivals</td></tr>`;
     }
     else {
-        arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
         for (arr of arrivals) {
             dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
             arrivals_list += `<tr>
@@ -74,8 +73,8 @@ function createArrivalList(arrivals, id) {
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`
         }
-        arrivals_list += '</tbody>'
     }
+    arrivals_list += '</tbody>'
 
     template.innerHTML = arrivals_list;
     return template.content.firstChild;
