@@ -1,7 +1,3 @@
-
-function showAddStopPanel() {
-}
-
 function clearHighlightedLine(list) {
     let li_list = list.getElementsByTagName("li");
     for (var i = 0; i < li_list.length; i++) {
