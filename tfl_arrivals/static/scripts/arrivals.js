@@ -161,6 +161,9 @@ function fillArrivals(naptanId) {
 
 function refreshArrivalDivs(repeat = true) {
     ms = getMonitoredStopsFromCookie();
+    if(ms.length == 0)
+      return false;
+
     for (stop of ms) {
         div = document.getElementById(stop + "_arrivals");
         if (div == null) {
@@ -179,10 +182,14 @@ function refreshArrivalDivs(repeat = true) {
     if (repeat) {
         setTimeout(refreshArrivalDivs, 15000)
     }
+    return true;
 };
 
 
 window.onload = function() {
-  refreshArrivalDivs();
+  if(!refreshArrivalDivs()) {
+    setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+  }
   add_button.classList.remove("invisible");
+
 }
