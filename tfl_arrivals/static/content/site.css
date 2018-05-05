@@ -237,6 +237,13 @@ div.card-content-bottom {
     height: 100%;
 }
 
+.add-stop-help {
+  font-size: 40px;
+  text-align: center;
+  color: #aaaaaa;
+  padding-top: 40px;
+}
+
 .stop-list-container {
   max-height: 80vh;
 }
@@ -250,6 +257,10 @@ div.card-content-bottom {
 }
 .selector-content > h4 {
   padding: 1.5rem;
+}
+
+#stop_list {
+  display: none;
 }
 
 

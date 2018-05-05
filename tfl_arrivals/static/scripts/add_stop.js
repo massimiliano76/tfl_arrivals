@@ -46,14 +46,20 @@ function selectedStop() {
 
 
 function loadStops(query) {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
+
     xhr.open('GET', api_host() + "/api/stop_search/" + query, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             stops = JSON.parse(xhr.responseText);
             clearStops();
+            if(stops.length > 0) {
+              add_stop_help.style.display = "none";
+              stop_list.style.display = "flex";
+            }
 
             for (let stop of stops) {
+
                 var li = document.createElement("li");
                 var name = stop.name.replace(" Underground Station", "");
                 if (stop.stop_letter != "" && stop.stop_letter.length <= 2) {
@@ -68,6 +74,7 @@ function loadStops(query) {
         }
     }
     xhr.send();
+    return success;
 }
 
 stop_search.addEventListener('keyup', function () {
