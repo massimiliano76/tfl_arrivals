@@ -150,6 +150,7 @@ div.card-content-bottom {
 .arrival-station {
     font-weight: bolder;
     font-variant: small-caps;
+    padding-top: 20px;
 }
 
 .arrival-table {
