@@ -215,7 +215,10 @@ div.card-content-bottom {
     margin-left: 5%;
     margin-right: 5%;
     height: 100%;
-    overflow-x: scroll;
+}
+
+.stop-list-container {
+  max-height: 80vh;
 }
 
 .selector-content {
@@ -234,7 +237,8 @@ div.card-content-bottom {
     border: 1px solid #999999;
     height: inherit;
     flex: 1;
-    overflow-y: scroll;
+    height: 90%;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
