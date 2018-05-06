@@ -60,12 +60,11 @@ function shortLineName(s) {
 function createArrivalList(arrivals, id) {
     var template = document.createElement('template');
 
-    arrivals_list = ""
+    arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
     if (stop_arrival_data.arrivals.length == 0) {
-        arrivals_list = `<div id="${id}"><h3>No arrivals</h3></div>`;
+        arrivals_list += `<tr><td class="no-arrivals">No arrivals</td></tr>`;
     }
     else {
-        arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
         for (arr of arrivals) {
             dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
             arrivals_list += `<tr>
@@ -74,8 +73,8 @@ function createArrivalList(arrivals, id) {
                 <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
             </tr>`
         }
-        arrivals_list += '</tbody>'
     }
+    arrivals_list += '</tbody>'
 
     template.innerHTML = arrivals_list;
     return template.content.firstChild;
@@ -99,39 +98,50 @@ function getDisplayName(name) {
 }
 
 function removeMonitoredStationDiv(naptan_id) {
-    deleteMonitoredStopFromCookie(naptan_id);
+    deleteMonitoredStop(naptan_id);
     div = document.getElementById(naptan_id + "_arrivals");
     div.classList.remove("add-card");
     div.classList.add("remove-card");
     setTimeout( () => {arrival_cards.removeChild(div)} , 500);
 }
 
+function displayStopData(naptan_id, stop_data) {
+  if (document.getElementById(naptan_id + "_arrivals") != null) {
+      document.getElementById(naptan_id + "_arrivals_name").innerHTML = getDisplayName(stop_data["name"]);
+      stop_letter_div = document.getElementById(naptan_id + "_arrivals_stop_letter");
+      stop_letter = stop_data["stop_letter"];
+      if (stop_letter != "" && stop_letter.length <= 2) {
+          stop_letter_div.parentElement.classList.remove("invisible");
+          stop_letter_div.textContent = stop_letter;
+      }
+      else {
+        // Add "F" for fuck
+        // If the div doesn't contain anything then the layout in Firefox
+        // fill be fucked up, even tough the position is relative
+        // and in this branch the div is invisible...
+        stop_letter_div.textContent = "F";
+      }
+  }
+}
 
-function fillStopData(naptanId) {
+
+function fillStopData(naptan_id) {
+    stored_data = localStorage.getItem(naptan_id);
+    if(stored_data != null) {
+      displayStopData(naptan_id, JSON.parse(stored_data));
+      return;
+    }
+
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/stop/" + naptanId, true);
+    xhr.open('GET', api_host() + "/api/stop/" + naptan_id, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.responseText == "")
                 return;
 
             stop_data = JSON.parse(xhr.responseText);
-            if (document.getElementById(naptanId + "_arrivals") != null) {
-                document.getElementById(naptanId + "_arrivals_name").innerHTML = getDisplayName(stop_data["name"]);
-                stop_letter_div = document.getElementById(naptanId + "_arrivals_stop_letter");
-                stop_letter = stop_data["stop_letter"];
-                if (stop_letter != "" && stop_letter.length <= 2) {
-                    stop_letter_div.parentElement.classList.remove("invisible");
-                    stop_letter_div.textContent = stop_letter;
-                }
-                else {
-                  // Add "F" for fuck
-                  // If the div doesn't contain anything then the layout in Firefox
-                  // fill be fucked up, even tough the position is relative
-                  // and in this branch the div is invisible...
-                  stop_letter_div.textContent = "F";
-                }
-            }
+            localStorage.setItem(naptan_id, xhr.responseText);
+            displayStopData(naptan_id, stop_data);
         }
     }
     xhr.send();
@@ -161,7 +171,10 @@ function fillArrivals(naptanId) {
 }
 
 function refreshArrivalDivs(repeat = true) {
-    ms = getMonitoredStopsFromCookie();
+    ms = getMonitoredStops();
+    if(ms.length == 0)
+      return false;
+
     for (stop of ms) {
         div = document.getElementById(stop + "_arrivals");
         if (div == null) {
@@ -180,7 +193,14 @@ function refreshArrivalDivs(repeat = true) {
     if (repeat) {
         setTimeout(refreshArrivalDivs, 15000)
     }
+    return true;
 };
 
 
-window.onload = refreshArrivalDivs
+window.onload = function() {
+  if(!refreshArrivalDivs()) {
+    setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+  }
+  add_button.classList.remove("invisible");
+
+}
