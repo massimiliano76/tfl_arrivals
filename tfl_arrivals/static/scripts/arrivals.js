@@ -98,7 +98,7 @@ function getDisplayName(name) {
 }
 
 function removeMonitoredStationDiv(naptan_id) {
-    deleteMonitoredStopFromCookie(naptan_id);
+    deleteMonitoredStop(naptan_id);
     div = document.getElementById(naptan_id + "_arrivals");
     div.classList.remove("add-card");
     div.classList.add("remove-card");
@@ -160,7 +160,7 @@ function fillArrivals(naptanId) {
 }
 
 function refreshArrivalDivs(repeat = true) {
-    ms = getMonitoredStopsFromCookie();
+    ms = getMonitoredStops();
     if(ms.length == 0)
       return false;
 
