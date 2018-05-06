@@ -1,18 +1,20 @@
 ﻿<!DOCTYPE html>
-<html>
-<head>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118796000-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<html {% block html_attribs %}lang="en"{% endblock %}>
 
-    gtag('config', 'UA-118796000-1');
-  </script>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118796000-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-118796000-1');
+    </script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simple, real-time arrival information for London's public transport, including bus stops, DLR and tube stations" />
     <title>{{ title }}</title>
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
@@ -26,17 +28,20 @@
     <div class="body-content">
         <div class="body-content">
             {% block content %}{% endblock %}
-            <footer>
-                <p><a href="{{ url_for('about') }}">About - Feedback</a></p>
-            </footer>
         </div>
     </div>
 
+    {% block scripts %}
     <script src="/static/scripts/jquery-3.3.1.min.js"></script>
     <script src="/static/scripts/bootstrap.js"></script>
     <script src="/static/scripts/common.js"></script>
     <script src="/static/scripts/localstorage.js"></script>
-    {% block scripts %}{% endblock %}
+    <script src="/static/scripts/arrivals.js"></script>
+    <script src="/static/scripts/add_stop.js"></script>
+    {% endblock %}
 
+    <footer>
+        <p><a href="{{ url_for('about') }}">About - Feedback</a></p>
+    </footer>
 </body>
 </html>
