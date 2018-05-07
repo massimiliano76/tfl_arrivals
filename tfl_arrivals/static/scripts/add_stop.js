@@ -74,7 +74,6 @@ function loadStops(query) {
         }
     }
     xhr.send();
-    return success;
 }
 
 stop_search.addEventListener('keyup', function () {

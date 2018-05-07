@@ -23,6 +23,27 @@
 
 <body>
     <h1 id="page_title">Arrivals of London</h1>
+
+    <div class="modal fade" id="about">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="jumbotron noselect">
+              <h3>Live arrival information for London's public transport</h3>
+              <hr/>
+              <p>Search for any public transport stop in London and see when the next bus, DLR, tube, tram or whatever is due.</p>
+              <p class="text-secondary">This site uses the public data feeds of Transport for London but is not affiliated with Transport for London.</p>
+              <p>{{ year }} - Attila Mitrocsak </p>
+              <p>
+                  <a href="mailto:admin@arrivalsoflondon.co.uk">Send feedback</a>
+              </p>
+              <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#about">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {% block add_stop %}{% endblock %}
 
     <div class="body-content">
@@ -41,7 +62,9 @@
     {% endblock %}
 
     <footer>
-        <p><a href="{{ url_for('about') }}">About - Feedback</a></p>
+        <p class="pt-4">
+          <button type="button" class="btn btn-small" data-toggle="modal" data-target="#about">About - Feedback</button>
+        </p>
     </footer>
 </body>
 </html>

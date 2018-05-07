@@ -25,15 +25,6 @@ def arrivals():
         title="Arrivals of London",
         year=datetime.utcnow().year)
 
-@app.route('/about')
-def about():
-    """Renders the About page."""
-    return render_template(
-        'about.html',
-        title='About Arrivals of London',
-        year=datetime.utcnow().year
-    )
-
 @app.route('/api/stop_search/<string:query>')
 def api_stop_search(query):
     stops = db_cache.search_stop(db.session, query, 100)
