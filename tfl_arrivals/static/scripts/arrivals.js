@@ -161,7 +161,9 @@ function fillArrivals(naptanId) {
                 old_list = document.getElementById(id);
                 table = document.getElementById(naptanId + "_arrivals_table");
                 loader = document.getElementById(naptanId + "_arrivals_loader");
-                loader.remove();
+                if(loader != null) {
+                  loader.remove();
+                }
                 new_list = createArrivalList(stop_arrival_data.arrivals, id);
                 table.replaceChild(new_list, old_list);
             }
