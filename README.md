@@ -1,7 +1,7 @@
 # Arrivals of London
 Simple web application to show the arrivals boards for the selected TfL stops
 
-See it in action on http://arrivalsoflondon.co.uk
+See it in action on http://www.arrivalsoflondon.co.uk
 
 ---
 # Old but not completely obsolete warning section kept for historical reasons
