@@ -1,5 +1,5 @@
 
-
+var card_template;
 
 function expectedInMinutes(ts) {
     let dateString = "2010-08-09 01:02:03"
@@ -18,35 +18,9 @@ function expectedInMinutes(ts) {
 
 function createArrivalDiv(naptanId) {
     var template = document.createElement('template');
-    id_stem = naptanId + "_arrivals"
-    div_text = `<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="${id_stem}">
-    <div class="card-content align-items-center noselect">
-        <div class="indicator invisible">
-          <div class="indicator-letter align-items-center" id="${id_stem}_stop_letter"></div>
-        </div >
-        <div class="card-content-top align-items-center">
-            <div class="row align-items-center card-content-top-inner">
-                <div class="col text-center arrival-station">
-                    <div class="h3" id="${id_stem}_name">
-                    </div>
-                </div>
-                <div class="col col-1 h3 text-center remove-card-container">
-                  <a href=# onclick='removeMonitoredStationDiv("${naptanId}")'>&times;</a>
-                </div>
-            </div>
-        </div>
-        <div class="card-content-bottom align-items-center">
-            <div id="${id_stem}_loader">
-              <div class="loader"></div>
-            </div>
-            <table class="arrival-table" id="${id_stem}_table">
-                <tbody class="arrival-table arrival-table-body" id="${id_stem}_list">
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>`
-
+    id_stem = naptanId + "_arrivals";
+    div_text = card_template.replace(/{{ id_stem }}/g, id_stem).
+      replace(/{{ naptan_id }}/g, naptanId);
     template.innerHTML = div_text;
     return template.content.firstChild;
 }
@@ -199,7 +173,22 @@ function refreshArrivalDivs(repeat = true) {
 };
 
 
+function getCardTemplate() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', api_host() + "/api/card_template", false);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.responseText == "")
+                return;
+            card_template = xhr.responseText;
+        }
+    }
+    xhr.send();
+}
+
 window.onload = function() {
+  getCardTemplate();
+
   if(!refreshArrivalDivs()) {
     setTimeout(() => $(stop_add_screen).modal('show'), 1500);
   }

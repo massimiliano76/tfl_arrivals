@@ -59,3 +59,9 @@ def api_arrivals(naptan_id):
 def api_stop_data(naptan_id):
     stop = db_cache.get_stop_point(db.session, naptan_id)
     return Response(stop.json(), status=200, mimetype='application/json')
+
+
+@app.route('/api/card_template')
+def card_template():
+    f = open("tfl_arrivals/templates/card.html")
+    return Response(f.readlines(), status=200, mimetype='text/html')

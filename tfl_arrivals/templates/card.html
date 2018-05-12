@@ -1,0 +1,27 @@
+<div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="{{ id_stem }}">
+  <div class="card-content align-items-center noselect">
+    <div class="indicator invisible">
+      <div class="indicator-letter align-items-center" id="{{ id_stem }}_stop_letter"></div>
+    </div>
+    <div class="card-content-top align-items-center">
+      <div class="row align-items-center card-content-top-inner">
+        <div class="col text-center arrival-station">
+          <div class="h3" id="{{ id_stem }}_name">
+          </div>
+        </div>
+        <div class="col col-1 h3 text-center remove-card-container">
+          <a href=# onclick='removeMonitoredStationDiv("{{ naptan_id }}")'>&times;</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-content-bottom align-items-center">
+      <div id="{{ id_stem }}_loader">
+        <div class="loader"></div>
+      </div>
+      <table class="arrival-table" id="{{ id_stem }}_table">
+        <tbody class="arrival-table arrival-table-body" id="{{ id_stem }}_list">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
