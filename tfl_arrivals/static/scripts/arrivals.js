@@ -17,9 +17,9 @@ function expectedInMinutes(ts) {
 }
 
 function createArrivalDiv(naptanId) {
-    var template = document.createElement('template');
-    id_stem = naptanId + "_arrivals";
-    div_text = card_template.replace(/{{ id_stem }}/g, id_stem).
+    let template = document.createElement('template');
+    let id_stem = naptanId + "_arrivals";
+    let div_text = card_template.replace(/{{ id_stem }}/g, id_stem).
       replace(/{{ naptan_id }}/g, naptanId);
     template.innerHTML = div_text;
     return template.content.firstChild;
@@ -173,25 +173,35 @@ function refreshArrivalDivs(repeat = true) {
 };
 
 
-function getCardTemplate() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/card_template", false);
+function getCardTemplate(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    let template = "";
+    xhr.open('GET', api_host() + "/api/card_template");
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            if (xhr.responseText == "")
-                return;
-            card_template = xhr.responseText;
+            if (xhr.responseText == "") {
+                reject(xhr.statusText);
+            }
+            else {
+                resolve(xhr.responseText);
+            }
         }
-    }
+    };
     xhr.send();
 }
 
 window.onload = function() {
-  getCardTemplate();
+  card_template_promise = new Promise(getCardTemplate);
 
-  if(!refreshArrivalDivs()) {
-    setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+
   }
-  add_button.classList.remove("invisible");
 
+  card_template_promise.then(function(t){
+    card_template = t;
+    if(!refreshArrivalDivs()) {
+      setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+    }
+
+    add_button.classList.remove("invisible");
+  });
 }
