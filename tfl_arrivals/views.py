@@ -39,10 +39,15 @@ def favicon():
     return send_from_directory(path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/<string:naptan_id>')
-def one_stop(naptan_id):
-    print("naptan_id = ", naptan_id)
-    stop = db_cache.get_stop_point(db.session, naptan_id)
+@app.route('/<string:stop_id>')
+def one_stop(stop_id):
+    print("stop_id = ", stop_id)
+    stop = db_cache.get_stop_point_by_url(db.session, stop_id.lower())
+    if stop == None:
+        stop = db_cache.get_stop_point(db.session, stop_id)
+
+    if stop == None:
+        return redirect(url_for("arrivals"))
 
     mode_list = stop.mode_list_string()
     print("mode_list = ", mode_list)
@@ -51,8 +56,8 @@ def one_stop(naptan_id):
         "arrival_boards.html",
         title=f"{stop.name}",
         description=f"{stop.name} - live {mode_list} arrival times",
-        naptan_id=naptan_id,
-        id_stem=f"{naptan_id}_arrivals",
+        naptan_id=stop.naptan_id,
+        id_stem=f"{stop.naptan_id}_arrivals",
         year=datetime.utcnow().year)
 
 
