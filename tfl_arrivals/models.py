@@ -54,6 +54,25 @@ class StopPoint(db.Model):
     def json(self) -> str:
         return f'{{"naptan_id": "{self.naptan_id}", "stop_letter": "{self.stop_letter}", "name": "{self.name}"}}'
 
+    def mode_list(self) -> str:
+        all = [(self.mode_bus, "bus"), (self.mode_cablecar, "cable car"), (self.mode_coach, "coach"),
+        (self.mode_dlr, "DLR"), (self.mode_nationalrail, "National Rail"), (self.mode_overground, "overground"),
+        (self.mode_riverbus, "river bus"), (self.mode_tflrail, "TfL Rail"),
+        (self.mode_tram, "tram"), (self.mode_tube, "tube")]
+        return [p[1] for p in all if p[0]]
+
+    def mode_list_string(self) -> str:
+        modes = self.mode_list()
+        print(modes)
+        s = ""
+        if len(modes) > 2:
+            s = ", ".join(modes[:-1]) + " and " + modes[-1]
+        else:
+            s = " and ".join(self.mode_list())
+        print(s)
+        return s
+
+
 class MonitoredStop(db.Model):
     __tablename__ = "monitored_stop"
 

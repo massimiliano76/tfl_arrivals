@@ -17,9 +17,9 @@ function expectedInMinutes(ts) {
 }
 
 function createArrivalDiv(naptanId) {
-    var template = document.createElement('template');
-    id_stem = naptanId + "_arrivals";
-    div_text = card_template.replace(/{{ id_stem }}/g, id_stem).
+    let template = document.createElement('template');
+    let id_stem = naptanId + "_arrivals";
+    let div_text = card_template.replace(/{{ id_stem }}/g, id_stem).
       replace(/{{ naptan_id }}/g, naptanId);
     template.innerHTML = div_text;
     return template.content.firstChild;
@@ -147,15 +147,23 @@ function fillArrivals(naptanId) {
 }
 
 function refreshArrivalDivs(repeat = true) {
-    ms = getMonitoredStops();
+    let ms = getMonitoredStops();
     if(ms.length == 0)
       return false;
 
+    let last_element = null;
     for (stop of ms) {
-        div = document.getElementById(stop + "_arrivals");
+        let div = document.getElementById(stop + "_arrivals");
         if (div == null) {
-            arrival_cards.insertBefore(createArrivalDiv(stop), add_arrival_card);
+            div = createArrivalDiv(stop)
+            if(last_element == null) {
+              arrival_cards.insertBefore(div, arrival_cards.firstChild);
+            }
+            else {
+              arrival_cards.insertBefore(div, last_element.nextSibling);
+            }
         }
+        last_element = div;
     }
 
     for (stop of ms) {
@@ -173,25 +181,49 @@ function refreshArrivalDivs(repeat = true) {
 };
 
 
-function getCardTemplate() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/card_template", false);
+function getCardTemplate(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    let template = "";
+    xhr.open('GET', api_host() + "/api/card_template");
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            if (xhr.responseText == "")
-                return;
-            card_template = xhr.responseText;
+            if (xhr.responseText == "") {
+                reject(xhr.statusText);
+            }
+            else {
+                resolve(xhr.responseText);
+            }
         }
-    }
+    };
     xhr.send();
 }
 
 window.onload = function() {
-  getCardTemplate();
+  card_template_promise = new Promise(getCardTemplate);
 
-  if(!refreshArrivalDivs()) {
-    setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+
+  let default_cards = document.getElementsByClassName("arrival-card");
+
+  let first_default_card = null;
+  if(default_cards.length != 0) {
+    let id = default_cards[0].getAttribute("data-naptan-id") + "_arrivals"
+    first_default_card = document.getElementById(id);
   }
-  add_button.classList.remove("invisible");
 
+  for (let i = 0; i < default_cards.length; i++) {
+    addMonitoredStop(default_cards[i].getAttribute("data-naptan-id"));
+  }
+
+  card_template_promise.then(function(t){
+    card_template = t;
+    if(!refreshArrivalDivs()) {
+      setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+    }
+
+    if(first_default_card != null) {
+      window.scrollTo(0, first_default_card.offsetTop-40);
+    }
+
+    add_button.classList.remove("invisible");
+  });
 }
