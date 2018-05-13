@@ -147,15 +147,23 @@ function fillArrivals(naptanId) {
 }
 
 function refreshArrivalDivs(repeat = true) {
-    ms = getMonitoredStops();
+    let ms = getMonitoredStops();
     if(ms.length == 0)
       return false;
 
+    let last_element = null;
     for (stop of ms) {
-        div = document.getElementById(stop + "_arrivals");
+        let div = document.getElementById(stop + "_arrivals");
         if (div == null) {
-            arrival_cards.insertBefore(createArrivalDiv(stop), add_arrival_card);
+            div = createArrivalDiv(stop)
+            if(last_element == null) {
+              arrival_cards.insertBefore(div, arrival_cards.firstChild);
+            }
+            else {
+              arrival_cards.insertBefore(div, last_element.nextSibling);
+            }
         }
+        last_element = div;
     }
 
     for (stop of ms) {
@@ -194,12 +202,26 @@ window.onload = function() {
   card_template_promise = new Promise(getCardTemplate);
 
 
+  let default_cards = document.getElementsByClassName("arrival-card");
+
+  let first_default_card = null;
+  if(default_cards.length != 0) {
+    let id = default_cards[0].getAttribute("data-naptan-id") + "_arrivals"
+    first_default_card = document.getElementById(id);
+  }
+
+  for (let i = 0; i < default_cards.length; i++) {
+    addMonitoredStop(default_cards[i].getAttribute("data-naptan-id"));
   }
 
   card_template_promise.then(function(t){
     card_template = t;
     if(!refreshArrivalDivs()) {
       setTimeout(() => $(stop_add_screen).modal('show'), 1500);
+    }
+
+    if(first_default_card != null) {
+      window.scrollTo(0, first_default_card.offsetTop-40);
     }
 
     add_button.classList.remove("invisible");

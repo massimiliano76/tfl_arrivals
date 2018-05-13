@@ -23,6 +23,7 @@ def arrivals():
     return render_template(
         "arrival_boards.html",
         title="Arrivals of London",
+        description="Simple, real-time arrival information for London's public transport, including bus stops, DLR and tube stations",
         year=datetime.utcnow().year)
 
 
@@ -37,6 +38,24 @@ def about():
 def favicon():
     return send_from_directory(path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/<string:naptan_id>')
+def one_stop(naptan_id):
+    print("naptan_id = ", naptan_id)
+    stop = db_cache.get_stop_point(db.session, naptan_id)
+
+    mode_list = stop.mode_list_string()
+    print("mode_list = ", mode_list)
+
+    return render_template(
+        "arrival_boards.html",
+        title=f"{stop.name}",
+        description=f"{stop.name} - live {mode_list} arrival times",
+        naptan_id=naptan_id,
+        id_stem=f"{naptan_id}_arrivals",
+        year=datetime.utcnow().year)
+
+
 @app.route('/api/stop_search/<string:query>')
 def api_stop_search(query):
     stops = db_cache.search_stop(db.session, query, 100)

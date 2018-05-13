@@ -33,6 +33,9 @@
 {% block content %}
 <div class="arrival-card-container">
     <div class="row justify-content-center" id="arrival_cards">
+      {% if naptan_id is defined %}
+        {% include 'card.html' %}
+      {% endif %}
       <div class="col col-lg-4 col-md-6 col-12" id="add_arrival_card">
         <div class="add-card-content">
           <button id="add_button" type="button" class="btn btn-large invisible" data-toggle="modal" data-target="#stop_add_screen">
