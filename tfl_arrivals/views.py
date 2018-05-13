@@ -86,5 +86,5 @@ def api_stop_data(naptan_id):
 
 @app.route('/api/card_template')
 def card_template():
-    f = open("tfl_arrivals/templates/card.html")
+    f = open(path.join(app.root_path, "templates/card.html"))
     return Response(f.readlines(), status=200, mimetype='text/html')
