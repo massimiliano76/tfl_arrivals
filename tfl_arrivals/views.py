@@ -52,9 +52,12 @@ def one_stop(stop_id):
     mode_list = stop.mode_list_string()
     print("mode_list = ", mode_list)
 
+    title = stop.name
+    if len(stop.stop_letter) > 0 and "->" not in stop.stop_letter:
+        title = f"{stop.name} ({stop.stop_letter})"
     return render_template(
         "arrival_boards.html",
-        title=f"{stop.name}",
+        title=title,
         description=f"{stop.name} - live {mode_list} arrival times",
         naptan_id=stop.naptan_id,
         id_stem=f"{stop.naptan_id}_arrivals",
