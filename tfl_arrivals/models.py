@@ -64,13 +64,11 @@ class StopPoint(db.Model):
 
     def mode_list_string(self) -> str:
         modes = self.mode_list()
-        print(modes)
         s = ""
         if len(modes) > 2:
             s = ", ".join(modes[:-1]) + " and " + modes[-1]
         else:
             s = " and ".join(self.mode_list())
-        print(s)
         return s
 
 

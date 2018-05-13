@@ -41,7 +41,6 @@ def favicon():
 
 @app.route('/<string:stop_id>')
 def one_stop(stop_id):
-    print("stop_id = ", stop_id)
     stop = db_cache.get_stop_point_by_url(db.session, stop_id.lower())
     if stop == None:
         stop = db_cache.get_stop_point(db.session, stop_id)
@@ -50,7 +49,6 @@ def one_stop(stop_id):
         return redirect(url_for("arrivals"))
 
     mode_list = stop.mode_list_string()
-    print("mode_list = ", mode_list)
 
     title = stop.name
     if len(stop.stop_letter) > 0 and "->" not in stop.stop_letter:
