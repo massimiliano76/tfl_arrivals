@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, Response
+from flask import render_template, request, redirect, url_for, Response, send_from_directory
 from tfl_arrivals import app, db_cache, arrivals_collector, db
 from tfl_arrivals.models import Arrival, StopPoint, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_arrivals
@@ -33,6 +33,10 @@ def about():
         title="Arrivals of London",
         year=datetime.utcnow().year)
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 @app.route('/api/stop_search/<string:query>')
 def api_stop_search(query):
     stops = db_cache.search_stop(db.session, query, 100)
