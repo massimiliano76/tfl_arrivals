@@ -33,6 +33,7 @@ class StopPoint(db.Model):
 
     naptan_id = db.Column(db.String(15), primary_key = True)
     name = db.Column(db.String(80), nullable = False)
+    url = db.Column(db.String(80), index = True, unique = True )
     indicator = db.Column(db.String(15)) # e.g. "Stop B", "just after"
     stop_letter = db.Column(db.String(8), nullable = True)
     latitude = db.Column(db.Float(precision=32), nullable = False)
@@ -63,13 +64,11 @@ class StopPoint(db.Model):
 
     def mode_list_string(self) -> str:
         modes = self.mode_list()
-        print(modes)
         s = ""
         if len(modes) > 2:
             s = ", ".join(modes[:-1]) + " and " + modes[-1]
         else:
             s = " and ".join(self.mode_list())
-        print(s)
         return s
 
 
