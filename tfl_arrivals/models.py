@@ -95,7 +95,10 @@ class Arrival(db.Model):
                f"towards='{self.towards}', destination_name='{self.destination_name}', " +\
                f"expected='{self.expected}', ttl='{self.ttl}')"
 
-    def expected_in_minutes(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
+    def expected_in_minutes_str(self, now: Callable[[], datetime]=datetime.utcnow) -> int:
+        delta = self.expected - now()
+        if self.expected < now() or delta.seconds < 20:
+            return "due"
         delta = self.expected - now()
         return ceil(delta.seconds/60)
 

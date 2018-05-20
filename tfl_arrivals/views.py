@@ -48,6 +48,7 @@ def one_stop(stop_id):
     if stop == None:
         return redirect(url_for("arrivals"))
 
+    arrivals = db_cache.get_arrivals(db.session, stop.naptan_id)
     mode_list = stop.mode_list_string()
 
     title = stop.name
@@ -58,6 +59,9 @@ def one_stop(stop_id):
         title=title,
         description=f"{stop.name} - live {mode_list} arrival times",
         naptan_id=stop.naptan_id,
+        server_stop_name = stop.name,
+        server_stop_indicator = stop.stop_letter,
+        arrivals = arrivals,
         id_stem=f"{stop.naptan_id}_arrivals",
         year=datetime.utcnow().year)
 
@@ -71,6 +75,7 @@ def api_stop_search(query):
 @app.route('/api/arrivals/<string:naptan_id>')
 def api_arrivals(naptan_id):
     stop = db_cache.get_stop_point(db.session, naptan_id)
+    logging.info(f"Returning arrival info for {stop.naptan_id}, {stop.name} {stop.stop_letter}")
     arrivals = db_cache.get_arrivals(db.session, naptan_id)
     response_data = {"naptanId": naptan_id,
                      "name": stop.name,
@@ -93,4 +98,15 @@ def api_stop_data(naptan_id):
 @app.route('/api/card_template')
 def card_template():
     f = open(path.join(app.root_path, "templates/card.html"))
-    return Response(f.readlines(), status=200, mimetype='text/html')
+
+    # naptan_id and id_stem will be replaced on client side when a new card
+    # is created, so replace them with the original placeholders here
+    resp = render_template("card.html",
+        naptan_id = "{{ naptan_id }}",
+        id_stem = "{{ id_stem }}",
+        server_stop_name = "",
+        server_stop_indicator = "F",
+        use_loader = True,
+        arrivals = []
+    )
+    return Response(resp, status=200, mimetype='text/html')
