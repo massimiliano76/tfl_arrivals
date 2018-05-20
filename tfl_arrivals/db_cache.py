@@ -141,7 +141,11 @@ def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arriv
 
 
 def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
-    __refresh_arrivals(session, naptan_id)
+    try:
+        __refresh_arrivals(session, naptan_id)
+    except e:
+        logger(f"Cannot refresh arrival info for {naptan_id}:", e)
+        return []
 
     req = session.query(ArrivalRequest).filter(ArrivalRequest.naptan_id == naptan_id).one_or_none()
     if req == None:
@@ -167,4 +171,7 @@ def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]
     if len(recent_queries) == 0:
         logger.info(f"No arrivals were requested in the last {tracking_time_limit.seconds/60} minutes")
     for q in recent_queries:
-        __refresh_arrivals(session, StopId(q.naptan_id))
+        try:
+            __refresh_arrivals(session, StopId(q.naptan_id))
+        except e:
+            logger(f"Cannot refresh arrival info for {q.naptan_id}:", e)
