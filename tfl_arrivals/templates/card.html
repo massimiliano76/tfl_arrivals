@@ -1,12 +1,15 @@
 <div class="col col-lg-4 col-md-6 col-12 arrival-card add_card" id="{{ id_stem }}" data-naptan-id="{{ naptan_id }}">
   <div class="card-content align-items-center noselect">
     <div class="indicator invisible">
-      <div class="indicator-letter align-items-center" id="{{ id_stem }}_stop_letter">F</div>
+      <div class="indicator-letter align-items-center" id="{{ id_stem }}_stop_letter">
+        {{ server_stop_indicator }}
+      </div>
     </div>
     <div class="card-content-top align-items-center">
       <div class="row align-items-center card-content-top-inner">
         <div class="col text-center arrival-station">
           <div class="h3" id="{{ id_stem }}_name">
+            {{ server_stop_name }}
           </div>
         </div>
         <div class="col col-1 h3 text-center remove-card-container">
@@ -15,11 +18,20 @@
       </div>
     </div>
     <div class="card-content-bottom align-items-center">
+      {% if use_loader is defined %}
       <div id="{{ id_stem }}_loader">
         <div class="loader"></div>
       </div>
+      {% endif %}
       <table class="arrival-table" id="{{ id_stem }}_table">
         <tbody class="arrival-table arrival-table-body" id="{{ id_stem }}_list">
+          {% for arrival in arrivals %}
+            <tr>
+                <td class="arrival-data arrival-line">{{ arrival.line_name }}</td>
+                <td class="arrival-data arrival-towards">{{ arrival.towards }}</td>
+                <td class="arrival-data arrival-expected">{{ arrival.expected_in_minutes_str() }}</td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
