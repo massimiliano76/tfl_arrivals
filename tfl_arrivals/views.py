@@ -56,8 +56,8 @@ def one_stop(stop_id):
         title = f"{stop.name} ({stop.stop_letter})"
     return render_template(
         "arrival_boards.html",
-        title=title,
-        description=f"{stop.name} - live {mode_list} arrival times",
+        title=f"{title} - live {mode_list} times",
+        description=f"The simplest real-time public transport arrival info you can find for {stop.name}, London. Select the stops you're interested in add to your list, and see only what you want to see.",
         naptan_id=stop.naptan_id,
         server_stop_name = stop.name,
         server_stop_indicator = stop.stop_letter,
