@@ -37,7 +37,12 @@ def about():
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+        'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory(path.join(app.root_path, 'static'),
+        'robots.txt', mimetype='text/plain')
 
 @app.route('/<string:stop_id>')
 def one_stop(stop_id):

@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: http://www.arrivalsoflondon.co.uk/sm/sitemap.xml
