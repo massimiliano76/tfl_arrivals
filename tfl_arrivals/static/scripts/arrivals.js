@@ -76,7 +76,12 @@ function removeMonitoredStationDiv(naptan_id) {
     div = document.getElementById(naptan_id + "_arrivals");
     div.classList.remove("add-card");
     div.classList.add("remove-card");
-    setTimeout( () => {arrival_cards.removeChild(div)} , 500);
+    setTimeout( () => {
+        arrival_cards.removeChild(div);
+        if(getMonitoredStops().length == 0) {
+          add_arrival_card_container.classList.add("cardless-padding");
+        }
+    } , 500);
 }
 
 function displayStopData(naptan_id, stop_data) {
@@ -148,9 +153,12 @@ function fillArrivals(naptanId) {
 
 function refreshArrivalDivs(repeat = true) {
     let ms = getMonitoredStops();
-    if(ms.length == 0)
+    if(ms.length == 0) {
+      add_arrival_card_container.classList.add("cardless-padding");
       return false;
+    }
 
+    add_arrival_card_container.classList.remove("cardless-padding");
     let last_element = null;
     for (stop of ms) {
         let div = document.getElementById(stop + "_arrivals");
