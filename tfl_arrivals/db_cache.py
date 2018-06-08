@@ -143,7 +143,7 @@ def __refresh_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arriv
 def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
     try:
         __refresh_arrivals(session, naptan_id)
-    except e:
+    except exc.DataError as e:
         logger(f"Cannot refresh arrival info for {naptan_id}:", e)
         return []
 
@@ -173,5 +173,5 @@ def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]
     for q in recent_queries:
         try:
             __refresh_arrivals(session, StopId(q.naptan_id))
-        except e:
+        except exc.DataError as e:
             logger(f"Cannot refresh arrival info for {q.naptan_id}:", e)
