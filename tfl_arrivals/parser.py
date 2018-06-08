@@ -28,6 +28,13 @@ def parse_arrivals(raw_json: str) -> List[Arrival]:
         arrivals.append(arrival)
     return arrivals
 
+def _parse_mode_group(stop_json, mode):
+    lmgs = stop_json["lineModeGroups"]
+    for lmg in lmgs:
+        if lmg["modeName"] == mode:
+            return ",".join(lmg["lineIdentifier"])
+    return ""
+
 def _parse_stop(stop_json) -> StopPoint:
     def get_optional(json, key):
         return json[key] if key in stop_json else ""
@@ -49,7 +56,9 @@ def _parse_stop(stop_json) -> StopPoint:
                 mode_riverbus = "river-bus" in modes,
                 mode_tflrail = "tflrail" in modes,
                 mode_tram = "tram" in modes,
-                mode_tube = "tube" in modes
+                mode_tube = "tube" in modes,
+                lines_bus = _parse_mode_group(stop_json, "bus"),
+                lines_tube = _parse_mode_group(stop_json, "tube"),
                 )
 
 

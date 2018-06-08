@@ -27,6 +27,17 @@ class ArrivalRequest(db.Model):
     naptan_id = db.Column(db.String(15))
     request_time = db.Column(db.DateTime, default=datetime.utcnow)
 
+def _b2s(b: bool) -> str:
+    if b:
+        return "true"
+    else:
+        return "false"
+
+def _optstr2str(l: str) -> str:
+    if l == None:
+        return ""
+    else:
+        return l
 
 class StopPoint(db.Model):
     __tablename__ = "stop_point"
@@ -49,11 +60,23 @@ class StopPoint(db.Model):
     mode_tflrail = db.Column(db.Boolean, unique = False, default = False)
     mode_tram = db.Column(db.Boolean, unique = False, default = False)
     mode_tube = db.Column(db.Boolean, unique = False, default = False)
+    lines_bus = db.Column(db.String(200), unique = False, nullable = True)
+    lines_tube = db.Column(db.String(200), unique = False, nullable = True)
 
     def str(self) -> str:
         return f'{self.naptan_id}, {self.name}, {self.latitude}, {self.longitude}'
+
     def json(self) -> str:
-        return f'{{"naptan_id": "{self.naptan_id}", "stop_letter": "{self.stop_letter}", "name": "{self.name}"}}'
+        return f'{{"naptan_id": "{self.naptan_id}", ' +\
+        f'"stop_letter": "{self.stop_letter}", ' +\
+        f'"name": "{self.name}", ' +\
+        f'"mode_bus": {_b2s(self.mode_bus)}, ' +\
+        f'"mode_dlr": {_b2s(self.mode_dlr)}, ' +\
+        f'"mode_overground": {_b2s(self.mode_overground)}, ' +\
+        f'"mode_tram": {_b2s(self.mode_tram)}, ' +\
+        f'"mode_tube": {_b2s(self.mode_tube)}, ' +\
+        f'"lines_bus": "{_optstr2str(self.lines_bus)}", ' +\
+        f'"lines_tube": "{_optstr2str(self.lines_tube)}"}}'
 
     def mode_list(self) -> str:
         all = [(self.mode_bus, "bus"), (self.mode_cablecar, "cable car"), (self.mode_coach, "coach"),

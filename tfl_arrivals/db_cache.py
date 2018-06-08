@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from tfl_arrivals.models import modes, StopId, StopPoint, CacheTimestamp, CachedDataType, Arrival, ArrivalRequest
 from tfl_arrivals.fetcher import fetch_stops, fetch_arrivals
 from datetime import datetime, timedelta
@@ -115,7 +115,12 @@ def search_stop(session: scoped_session, query_string: str, max_count: int) -> L
     """Retrieves all the stops from the local database that matches the query. If
     more than max_count matches are in the database, an empty list is returned"""
 
-    q = session.query(StopPoint).filter(StopPoint.name.like(f"%{query_string}%"))
+    q = session.query(StopPoint).filter(StopPoint.name.like(f"%{query_string}%")).\
+        order_by(StopPoint.mode_tube.desc(),
+            StopPoint.mode_dlr.desc(),
+            StopPoint.mode_overground.desc(),
+            StopPoint.mode_tram.desc(),
+            StopPoint.name)
 
     if q.count() > max_count:
         return []

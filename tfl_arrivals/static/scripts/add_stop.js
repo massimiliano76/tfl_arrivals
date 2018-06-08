@@ -44,6 +44,42 @@ function selectedStop() {
   return null;
 }
 
+const line_names = {
+  "bakerloo": "Bakerloo",
+  "central": "Central",
+  "circle": "Circle",
+  "district": "District",
+  "elizabeth": "Elizabeth",
+  "hammersmith-city": "Hammersmith & City",
+  "jubilee": "Jubilee",
+  "metropolitan": "Metropolitan",
+  "northern": "Northern",
+  "piccadilly": "Piccadilly",
+  "victoria": "Victoria",
+  "waterloo-city": "Waterloo & city"
+}
+
+function createBadges(stop) {
+  let tubes = stop.lines_tube == "" ? "" : stop.lines_tube.split(",").
+    map(x => `<span class="badge badge-secondary badge-tube-${x}">${line_names[x]}</span>`).
+    join(" ");
+
+  let buses = stop.lines_bus == "" ? "" : stop.lines_bus.split(",").
+    map(x => `<span class="badge badge-secondary badge-bus">${x.toUpperCase()}</span>`).
+    join(" ");
+
+  let dlr = stop.mode_dlr ? `<span class="badge badge-secondary badge-dlr">DLR</span>` : "";
+  let overground = stop.mode_overground ? `<span class="badge badge-secondary badge-overground">Overground</span>` : "";
+  let tram = stop.mode_tram ? `<span class="badge badge-secondary badge-tram">Tram</span>` : "";
+
+  let all = (tubes + " " + overground + " " + dlr + " " + tram).trim();
+  if(all == "") {
+    all = buses;
+  }
+
+  return all == "" ? "" : "<br>" + all;
+}
+
 
 function loadStops(query) {
     let xhr = new XMLHttpRequest();
@@ -60,12 +96,15 @@ function loadStops(query) {
 
             for (let stop of stops) {
 
-                var li = document.createElement("li");
                 var name = stop.name.replace(" Underground Station", "");
                 if (stop.stop_letter != "" && stop.stop_letter.length <= 2) {
                     name += " (" + stop.stop_letter + ")";
                 }
-                li.appendChild(document.createTextNode(name));
+                let li = document.createElement("li");
+                let badges = createBadges(stop);
+                if(badges == "")
+                  continue;
+                li.innerHTML = name + badges;
                 li.classList.add("list-group-item");
                 li.setAttribute("data-naptan-id", stop.naptan_id);
                 li.onclick = function () { selectStop(stop.naptan_id); }
