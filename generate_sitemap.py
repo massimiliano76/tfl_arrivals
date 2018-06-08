@@ -50,16 +50,17 @@ def main():
    </url>""")
     added_urls = set()
     for stop in stops:
-        add = False
+        add = True
+        # add = False
         if stop.url in added_urls:
             continue
-        if stop.mode_dlr or stop.mode_tram or stop.mode_tube:
-            add = True
-        else:
-            for poi in pois:
-                if dist(poi, stop) < 0.004:
-                    add  = True
-                    break
+        # if stop.mode_dlr or stop.mode_tram or stop.mode_tube:
+        #     add = True
+        # else:
+        #     for poi in pois:
+        #         if dist(poi, stop) < 0.004:
+        #             add  = True
+        #             break
 
         if add:
             print(stop.naptan_id, stop.name, stop.stop_letter)
@@ -68,8 +69,7 @@ def main():
    <url>
       <loc>http://www.arrivalsoflondon.co.uk/{stop.url}</loc>
       <lastmod>{current_date}</lastmod>
-      <changefreq>weekly</changefreq>
-      <priority>0.01</priority>
+      <changefreq>always</changefreq>
    </url>""")
 
     f.write("\n</urlset>")
