@@ -115,8 +115,19 @@ function loadStops(query) {
     xhr.send();
 }
 
-stop_search.addEventListener('keyup', function () {
-    if(stop_search.value.length >= 3) {
-      loadStops(stop_search.value);
+var delayedSearch = null;
+stop_search.addEventListener('keyup', function (event) {
+    clearTimeout(delayedSearch);
+    if(event.key === "Enter") {
+        loadStops(stop_search.value);
     }
+    else if(stop_search.value.length >= 3) {
+        delayedSearch = setTimeout( () => loadStops(stop_search.value), 700);
+    }
+});
+
+search_icon.addEventListener('click', function () {
+    console.log("stop_icon click");
+    clearTimeout(delayedSearch);
+    loadStops(stop_search.value);
 });
