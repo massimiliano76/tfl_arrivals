@@ -36,9 +36,9 @@ class arrivals_collector(object):
             end_time = datetime.utcnow()
             d = end_time - start_time
             self.logger.info(f"Checking/updating arrival db took {d.microseconds / 1000} ms")
-            if d > timedelta(seconds=10):
+            if d > timedelta(seconds=15):
                 self.logger.warning(f"Updating arrival db is too slow")
             else:
-                sleep_for = 10 - d.microseconds / (1000 * 1000)
+                sleep_for = 15 - d.microseconds / (1000 * 1000)
                 self.logger.info(f"Sleeping for {sleep_for} s")
                 time.sleep(sleep_for)
