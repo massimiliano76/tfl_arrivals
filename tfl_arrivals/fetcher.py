@@ -34,7 +34,7 @@ def __save_response(cache_path, url, response):
     f.close()
 
 def __load_response(cache_path, url):
-    logging.debug(f"Loading url from cache ({url})")
+    logging.debug(f"Loading url from cache ({url} <- {__get_cache_file_name(url)})")
     try:
         f = open(cache_path + __get_cache_file_name(url))
         return f.read()
