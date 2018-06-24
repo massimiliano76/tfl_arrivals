@@ -74,7 +74,12 @@ def one_stop(stop_id):
 @app.route('/api/stop_search/<string:query>')
 def api_stop_search(query):
     stops = db_cache.search_stop(db.session, query, 100)
-    resp = Response("[" + ", ".join([stop.json() for stop in stops]) + "]", status=200, mimetype='application/json')
+    if stops == None:
+        json = ""
+    else:
+        json = "[" + ", ".join([stop.json() for stop in stops]) + "]"
+        
+    resp = Response(json, status=200, mimetype='application/json')
     return resp
 
 @app.route('/api/arrivals/<string:naptan_id>')

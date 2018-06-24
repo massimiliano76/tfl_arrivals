@@ -80,6 +80,30 @@ function createBadges(stop) {
   return all == "" ? "" : "<br>" + all;
 }
 
+const SearchHint = Object.freeze({
+  INIT: "Start typing the name of a bus stop, tube or DLR station here",
+  NO_MATCH: "No matches",
+  TOO_MANY_MATCHES: "Too many matches, keep typing",
+  NONE: ""
+});
+
+function update_search_hint(hint) {
+  search_hint_text.textContent = hint;
+  search_hint_arrow.style.display = "none";
+  if(hint === "") {
+    search_hint.style.display = "none";
+    stop_list.style.display = "flex";
+  }
+  else {
+    search_hint.style.display = "block";
+    stop_list.style.display = "none";
+  }
+
+  if(hint === SearchHint.INIT || hint == SearchHint.TOO_MANY_MATCHES) {
+    search_hint_arrow.style.display = "inline-block";
+  }
+}
+
 
 function loadStops(query) {
     let xhr = new XMLHttpRequest();
@@ -87,11 +111,18 @@ function loadStops(query) {
     xhr.open('GET', api_host() + "/api/stop_search/" + query, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            stops = JSON.parse(xhr.responseText);
             clearStops();
-            if(stops.length > 0) {
-              add_stop_help.style.display = "none";
-              stop_list.style.display = "flex";
+            if(xhr.responseText == "") {
+              update_search_hint(SearchHint.TOO_MANY_MATCHES);
+              return;
+            }
+
+            stops = JSON.parse(xhr.responseText);
+            if(stops.length == 0) {
+              update_search_hint(SearchHint.NO_MATCH);
+            }
+            else {
+              update_search_hint(SearchHint.NONE);
             }
 
             for (let stop of stops) {
@@ -118,10 +149,13 @@ function loadStops(query) {
 var delayedSearch = null;
 stop_search.addEventListener('keyup', function (event) {
     clearTimeout(delayedSearch);
+    if(stop_search.value === "") {
+      update_search_hint(SearchHint.INIT);
+    }
     if(event.key === "Enter") {
         loadStops(stop_search.value);
     }
-    else if(stop_search.value.length >= 3) {
+    else {
         delayedSearch = setTimeout( () => loadStops(stop_search.value), 700);
     }
 });
