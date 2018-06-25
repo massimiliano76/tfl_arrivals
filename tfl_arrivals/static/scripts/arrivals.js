@@ -212,6 +212,7 @@ window.onload = function() {
 
   let default_cards = document.getElementsByClassName("arrival-card");
 
+  update_search_hint(SearchHint.INIT);
   let first_default_card = null;
   if(default_cards.length != 0) {
     let id = default_cards[0].getAttribute("data-naptan-id") + "_arrivals"

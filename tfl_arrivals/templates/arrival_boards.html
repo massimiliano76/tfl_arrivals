@@ -10,14 +10,14 @@
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text">
-                              <i class="material-icons">search</i>
+                              <i class="material-icons" id="search_icon">search</i>
                           </span>
                       </div>
                       <input id="stop_search" type="text" class="form-control" placeholder="Search stop by name" />
                   </div>
-                  <div class="add-stop-help noselect" id="add_stop_help">
-                    <i class="material-icons">arrow_upward</i>
-                    <p>Start typing the name of a bus stop, tube or DLR station here</p>
+                  <div class="add-stop-help noselect" id="search_hint">
+                    <i id="search_hint_arrow" class="material-icons">arrow_upward</i>
+                    <p id="search_hint_text"></p>
                   </div>
                   <div class="stop-list-container">
                       <ul class="list-group stop-list" id="stop_list"></ul>

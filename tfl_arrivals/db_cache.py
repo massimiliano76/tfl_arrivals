@@ -113,7 +113,7 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
 
 def search_stop(session: scoped_session, query_string: str, max_count: int) -> List[StopPoint]:
     """Retrieves all the stops from the local database that matches the query. If
-    more than max_count matches are in the database, an empty list is returned"""
+    more than max_count matches are in the database, None is returned"""
 
     q = session.query(StopPoint).filter(StopPoint.name.like(f"%{query_string}%")).\
         order_by(StopPoint.mode_tube.desc(),
@@ -123,7 +123,7 @@ def search_stop(session: scoped_session, query_string: str, max_count: int) -> L
             StopPoint.name)
 
     if q.count() > max_count:
-        return []
+        return None
     else:
         return q.all()
 
