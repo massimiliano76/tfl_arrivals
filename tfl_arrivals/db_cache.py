@@ -167,7 +167,7 @@ def get_arrivals(session: scoped_session, naptan_id: StopId) -> List[Arrival]:
 
 def refresh_recently_requested_stop_ids(session: scoped_session) -> List[StopId]:
     logger = logging.getLogger(__name__)
-    tracking_time_limit = timedelta(minutes=15)
+    tracking_time_limit = timedelta(minutes=5)
     session.query(ArrivalRequest).\
         filter(ArrivalRequest.request_time < (datetime.utcnow() - tracking_time_limit)).\
         delete()
