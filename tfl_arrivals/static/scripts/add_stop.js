@@ -108,7 +108,7 @@ function update_search_hint(hint) {
 function loadStops(query) {
     let xhr = new XMLHttpRequest();
 
-    xhr.open('GET', api_host() + "/api/stop_search/" + query, true);
+    xhr.open('GET', "https://arrivals-of-london.appspot.com/api/stop_search/" + query, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             clearStops();
