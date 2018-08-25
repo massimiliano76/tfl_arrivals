@@ -60,11 +60,11 @@ const line_names = {
 }
 
 function createBadges(stop) {
-  let tubes = stop.lines_tube == "" ? "" : stop.lines_tube.split(",").
+  let tubes = stop.lines_tube.
     map(x => `<span class="badge badge-secondary badge-tube-${x}">${line_names[x]}</span>`).
     join(" ");
 
-  let buses = stop.lines_bus == "" ? "" : stop.lines_bus.split(",").
+  let buses = stop.lines_bus.
     map(x => `<span class="badge badge-secondary badge-bus">${x.toUpperCase()}</span>`).
     join(" ");
 
@@ -108,7 +108,7 @@ function update_search_hint(hint) {
 function loadStops(query) {
     let xhr = new XMLHttpRequest();
 
-    xhr.open('GET', api_host() + "/api/stop_search/" + query, true);
+    xhr.open('GET', "https://arrivals-of-london.appspot.com/api/stop_search/" + query, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             clearStops();
