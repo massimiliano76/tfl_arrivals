@@ -60,11 +60,11 @@ const line_names = {
 }
 
 function createBadges(stop) {
-  let tubes = stop.lines_tube == "" ? "" : stop.lines_tube.split(",").
+  let tubes = stop.lines_tube.
     map(x => `<span class="badge badge-secondary badge-tube-${x}">${line_names[x]}</span>`).
     join(" ");
 
-  let buses = stop.lines_bus == "" ? "" : stop.lines_bus.split(",").
+  let buses = stop.lines_bus.
     map(x => `<span class="badge badge-secondary badge-bus">${x.toUpperCase()}</span>`).
     join(" ");
 
