@@ -88,12 +88,6 @@ def api_arrivals(naptan_id):
     resp = Response(json.dumps(response_data), status=200, mimetype='application/json')
     return resp
 
-@app.route('/api/stop/<string:naptan_id>')
-def api_stop_data(naptan_id):
-    stop = db_cache.get_stop_point(db.session, naptan_id)
-    return Response(stop.json(), status=200, mimetype='application/json')
-
-
 @app.route('/api/card_template')
 def card_template():
     f = open(path.join(app.root_path, "templates/card.html"))
