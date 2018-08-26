@@ -112,7 +112,7 @@ function fillStopData(naptan_id) {
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/stop/" + naptan_id, true);
+    xhr.open('GET', api_host_gcp() + "/api/stop/" + naptan_id, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.responseText == "")
