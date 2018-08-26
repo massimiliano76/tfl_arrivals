@@ -111,23 +111,6 @@ def __update_cache(session: scoped_session, desc: __UpdateDescription):
 
 ### Public methods
 
-def search_stop(session: scoped_session, query_string: str, max_count: int) -> List[StopPoint]:
-    """Retrieves all the stops from the local database that matches the query. If
-    more than max_count matches are in the database, None is returned"""
-
-    q = session.query(StopPoint).filter(StopPoint.name.like(f"%{query_string}%")).\
-        order_by(StopPoint.mode_tube.desc(),
-            StopPoint.mode_dlr.desc(),
-            StopPoint.mode_overground.desc(),
-            StopPoint.mode_tram.desc(),
-            StopPoint.name)
-
-    if q.count() > max_count:
-        return None
-    else:
-        return q.all()
-
-
 def get_stop_point(session: scoped_session, naptan_id: StopId) -> StopPoint:
     # ud = __UpdateDescription(CachedDataType.stop_point, naptan_id, timedelta(days=1),
     #                          __cache_stop_point, __delete_stop_point)
