@@ -2,8 +2,7 @@
 var card_template;
 
 function expectedInMinutes(ts) {
-    let dateString = "2010-08-09 01:02:03"
-    let regex = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/
+    let regex = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z/
     let [, year, month, day, hours, minutes, seconds] = regex.exec(ts)
     let now = new Date();
     let utc_now = (now.getTime() + now.getTimezoneOffset() * 60 * 1000);
@@ -35,16 +34,16 @@ function createArrivalList(arrivals, id) {
     var template = document.createElement('template');
 
     arrivals_list = `<tbody class="arrival-table arrival-table-body" id="${id}">`
-    if (stop_arrival_data.arrivals.length == 0) {
+    if (stop_arrival_data.events.length == 0) {
         arrivals_list += `<tr><td class="no-arrivals">No arrivals</td></tr>`;
     }
     else {
         for (arr of arrivals) {
-            dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destination_name);
+            dest = (arr.towards === "null") ? "Terminating here" : getDisplayName(arr.destinationName);
             arrivals_list += `<tr>
                 <td class="arrival-data arrival-line">${shortLineName(arr.lineName)}</td>
                 <td class="arrival-data arrival-towards">${dest}</td>
-                <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expected)}</td>
+                <td class="arrival-data arrival-expected">${expectedInMinutes(arr.expectedArrival)}</td>
             </tr>`
         }
     }
@@ -128,7 +127,7 @@ function fillStopData(naptan_id) {
 
 function fillArrivals(naptanId) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', api_host() + "/api/arrivals/" + naptanId, true);
+    xhr.open('GET', api_host_gcp() + "/api/arrivals/" + naptanId, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.responseText == "")
@@ -143,7 +142,7 @@ function fillArrivals(naptanId) {
                 if(loader != null) {
                   loader.remove();
                 }
-                new_list = createArrivalList(stop_arrival_data.arrivals, id);
+                new_list = createArrivalList(stop_arrival_data.events, id);
                 table.replaceChild(new_list, old_list);
             }
         }
