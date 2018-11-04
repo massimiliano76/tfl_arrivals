@@ -1,7 +1,8 @@
 # Arrivals of London
-Simple web application to show the arrivals boards for the selected TfL stops
 
-See it in action on http://www.arrivalsoflondon.co.uk
+This - now obsolete - repo contains the original implementation of a simple web application that shows the arrivals boards for the selected TfL stops (https://arrivalsoflondon.co.uk).
+
+This is code no longer in use as it was rewritten in Typescript React with a Go back-end.
 
 ---
 # Old but not completely obsolete warning section kept for historical reasons
